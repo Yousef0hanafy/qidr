@@ -72,16 +72,16 @@ export function ReviewModal({ isOpen, onClose, branchId }: ReviewModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && resetAndClose()}>
-      <DialogContent className="max-w-md sm:max-w-lg rounded-2xl overflow-hidden p-0 bg-[#003327] border-white/10 [&>button]:text-[#F3E5D8]/60 [&>button]:hover:text-[#F1CDAB]">
+      <DialogContent className="max-w-md sm:max-w-lg rounded-2xl overflow-hidden p-0 bg-[#1A1410] border-white/10 [&>button]:text-[#D4C8BB]/60 [&>button]:hover:text-[#D4956A]">
         <div
           className="p-6 sm:p-8"
           dir={isRTL ? 'rtl' : 'ltr'}
           lang={language}
         >
-          <DialogTitle className="text-xl font-bold text-[#F1CDAB] text-center mb-2">
+          <DialogTitle className="text-xl font-bold text-[#D4956A] text-center mb-2">
             {getTranslation(language, 'rate_your_experience')}
           </DialogTitle>
-          <DialogDescription className="text-center text-[#F3E5D8]/50 text-sm mb-6">
+          <DialogDescription className="text-center text-[#D4C8BB]/50 text-sm mb-6">
             {getTranslation(language, 'how_was_your_experience')}
           </DialogDescription>
 
@@ -95,12 +95,12 @@ export function ReviewModal({ isOpen, onClose, branchId }: ReviewModalProps) {
                 className="flex flex-col items-center gap-4 py-6"
               >
                 <CheckCircle className="w-16 h-16 text-green-400" />
-                <p className="text-[#F3E5D8] font-medium text-center">
+                <p className="text-[#D4C8BB] font-medium text-center">
                   {getTranslation(language, 'feedback_sent')}
                 </p>
                 <Button
                   onClick={resetAndClose}
-                  className="mt-2 bg-[#F1CDAB]/20 hover:bg-[#F1CDAB]/30 text-[#F1CDAB] rounded-full px-6 border border-[#F1CDAB]/20"
+                  className="mt-2 bg-[#D4956A]/20 hover:bg-[#D4956A]/30 text-[#D4956A] rounded-full px-6 border border-[#D4956A]/20"
                 >
                   {getTranslation(language, 'close')}
                 </Button>
@@ -131,7 +131,7 @@ export function ReviewModal({ isOpen, onClose, branchId }: ReviewModalProps) {
                         )}
                         fill={
                           star <= (hoverRating || rating)
-                            ? '#F1CDAB'
+                            ? '#D4956A'
                             : 'none'
                         }
                       />
@@ -156,7 +156,7 @@ export function ReviewModal({ isOpen, onClose, branchId }: ReviewModalProps) {
                         )}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="rounded-xl bg-white/5 border-white/15 text-[#F1CDAB] placeholder:text-[#F3E5D8]/30 focus:border-[#F1CDAB]/40 focus:ring-[#F1CDAB]/20"
+                        className="rounded-xl bg-white/5 border-white/15 text-[#D4956A] placeholder:text-[#D4C8BB]/30 focus:border-[#D4956A]/40 focus:ring-[#D4956A]/20"
                         dir={isRTL ? 'rtl' : 'ltr'}
                       />
                       <Textarea
@@ -166,13 +166,13 @@ export function ReviewModal({ isOpen, onClose, branchId }: ReviewModalProps) {
                         )}
                         value={feedback}
                         onChange={(e) => setFeedback(e.target.value)}
-                        className="rounded-xl bg-white/5 border-white/15 text-[#F1CDAB] placeholder:text-[#F3E5D8]/30 focus:border-[#F1CDAB]/40 focus:ring-[#F1CDAB]/20 min-h-24"
+                        className="rounded-xl bg-white/5 border-white/15 text-[#D4956A] placeholder:text-[#D4C8BB]/30 focus:border-[#D4956A]/40 focus:ring-[#D4956A]/20 min-h-24"
                         dir={isRTL ? 'rtl' : 'ltr'}
                       />
                       <Button
                         onClick={handleSubmitFeedback}
                         disabled={isSubmitting || !feedback.trim()}
-                        className="w-full bg-[#F1CDAB]/20 hover:bg-[#F1CDAB]/30 text-[#F1CDAB] rounded-xl h-12 font-medium border border-[#F1CDAB]/20"
+                        className="w-full bg-[#D4956A]/20 hover:bg-[#D4956A]/30 text-[#D4956A] rounded-xl h-12 font-medium border border-[#D4956A]/20"
                       >
                         <Send className="size-4" />
                         {getTranslation(language, 'submit_feedback')}
@@ -214,6 +214,6 @@ function cn_star(
 ): string {
   const isActive = star <= (hoverRating || rating)
   return `w-10 h-10 transition-colors duration-200 ${
-    isActive ? 'text-[#F1CDAB]' : 'text-[#F3E5D8]/20'
+    isActive ? 'text-[#D4956A]' : 'text-[#D4C8BB]/20'
   }`
 }

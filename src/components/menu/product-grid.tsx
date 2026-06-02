@@ -146,8 +146,8 @@ export function ProductGrid({
         dir={isRTL ? 'rtl' : 'ltr'}
         lang={language}
       >
-        <SearchX className="w-14 h-14 text-[#F3E5D8]/25 mb-4" />
-        <p className="text-[#F3E5D8]/50 text-base font-medium">
+        <SearchX className="w-14 h-14 text-[#D4C8BB]/25 mb-4" />
+        <p className="text-[#D4C8BB]/50 text-base font-medium">
           {getTranslation(language, 'no_results')}
         </p>
       </div>
@@ -165,10 +165,10 @@ export function ProductGrid({
         >
           {/* Section heading */}
           <div className="flex items-center gap-3 mb-4 px-2">
-            <h2 className="text-lg font-bold text-[#F1CDAB] whitespace-nowrap">
+            <h2 className="text-lg font-bold text-[#D4956A] whitespace-nowrap">
               {language === 'ar' ? category.name_ar : category.name_en}
             </h2>
-            <div className="flex-1 h-px bg-[#F1CDAB]/20" />
+            <div className="flex-1 h-px bg-[#D4956A]/20" />
           </div>
 
           {/* Single-column card list */}

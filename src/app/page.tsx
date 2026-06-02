@@ -228,7 +228,7 @@ export default function MenuPage() {
     <div
       dir={isRTL ? 'rtl' : 'ltr'}
       lang={language}
-      className="min-h-screen flex flex-col bg-[#003327]"
+      className="min-h-screen flex flex-col bg-[#1A1410]"
     >
       {/* Language Switcher — fixed */}
       <LanguageSwitcher />
@@ -263,9 +263,9 @@ export default function MenuPage() {
         <div className="max-w-[552px] mx-auto">
           {!selectedBranch ? (
             <div className="flex flex-col items-center justify-center py-24 px-4 text-center">
-              <div className="w-14 h-14 rounded-full bg-[#F1CDAB]/10 flex items-center justify-center mb-5">
+              <div className="w-14 h-14 rounded-full bg-[#D4956A]/10 flex items-center justify-center mb-5">
                 <svg
-                  className="w-7 h-7 text-[#F1CDAB]/60"
+                  className="w-7 h-7 text-[#D4956A]/60"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -284,12 +284,12 @@ export default function MenuPage() {
                   />
                 </svg>
               </div>
-              <h2 className="text-lg font-bold text-[#F1CDAB] mb-2">
+              <h2 className="text-lg font-bold text-[#D4956A] mb-2">
                 {language === 'ar'
                   ? 'اختر فرعًا لتصفح القائمة'
                   : 'Choose a branch to browse the menu'}
               </h2>
-              <p className="text-[#F3E5D8]/40 text-sm">
+              <p className="text-[#D4C8BB]/40 text-sm">
                 {language === 'ar'
                   ? 'يرجى اختيار الفرع من القائمة أعلاه'
                   : 'Please select a branch from the selector above'}

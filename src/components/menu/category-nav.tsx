@@ -63,7 +63,7 @@ export function CategoryNav({
     <nav
       dir={language === 'ar' ? 'rtl' : 'ltr'}
       lang={language}
-      className="sticky top-0 z-40 bg-[#003327] shadow-lg"
+      className="sticky top-0 z-40 bg-[#1A1410] shadow-lg"
     >
       <div
         ref={scrollRef}
@@ -88,8 +88,8 @@ export function CategoryNav({
                 className={cn(
                   'w-[68px] h-[68px] rounded-full overflow-hidden transition-all duration-300',
                   isActive
-                    ? 'ring-[3px] ring-[#F1CDAB] ring-offset-2 ring-offset-[#003327] scale-105'
-                    : 'ring-[2px] ring-white/15 group-hover:ring-[#F1CDAB]/40'
+                    ? 'ring-[3px] ring-[#D4956A] ring-offset-2 ring-offset-[#1A1410] scale-105'
+                    : 'ring-[2px] ring-white/15 group-hover:ring-[#D4956A]/40'
                 )}
               >
                 {cat.imageUrl ? (
@@ -100,8 +100,8 @@ export function CategoryNav({
                     loading="lazy"
                   />
                 ) : (
-                  <div className="w-full h-full bg-[#F1CDAB]/15 flex items-center justify-center">
-                    <span className="text-[#F1CDAB] text-lg font-bold">
+                  <div className="w-full h-full bg-[#D4956A]/15 flex items-center justify-center">
+                    <span className="text-[#D4956A] text-lg font-bold">
                       {catName.charAt(0)}
                     </span>
                   </div>
@@ -113,8 +113,8 @@ export function CategoryNav({
                 className={cn(
                   'text-xs text-center transition-colors duration-300 max-w-[76px] line-clamp-1',
                   isActive
-                    ? 'text-[#F1CDAB] font-semibold'
-                    : 'text-[#F3E5D8]/70 group-hover:text-[#F3E5D8]'
+                    ? 'text-[#D4956A] font-semibold'
+                    : 'text-[#D4C8BB]/70 group-hover:text-[#D4C8BB]'
                 )}
               >
                 {catName}

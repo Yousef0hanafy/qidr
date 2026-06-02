@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   keywords: ["Qidr", "قدر", "restaurant", "menu", "digital menu", "food"],
   authors: [{ name: "Qidr" }],
   icons: {
-    icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
+    icon: "/Qidr_Favicon.avif",
   },
   openGraph: {
     title: "قدر | Qidr - Digital Menu",
@@ -33,7 +33,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="antialiased text-[#F1CDAB]"
+        className="antialiased text-[#D4956A]"
         style={{
           fontFamily: 'var(--font-primary)',
         }}
@@ -41,11 +41,11 @@ export default function RootLayout({
         <style>{`
           :root {
             --font-primary: 'Noto Kufi Arabic', 'Inter', system-ui, -apple-system, sans-serif;
-            --color-green-dark: #003327;
-            --color-green-darker: #002419;
-            --color-gold: #F1CDAB;
-            --color-cream: #F3E5D8;
-            --color-white-on-dark: #F2F0E5;
+            --color-espresso: #1A1410;
+            --color-espresso-dark: #120D08;
+            --color-caramel: #D4956A;
+            --color-beige: #D4C8BB;
+            --color-cream: #F2EAE0;
           }
           html {
             scroll-behavior: smooth;
@@ -53,7 +53,7 @@ export default function RootLayout({
           body {
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            background: #003327;
+            background: #1A1410;
           }
           /* Custom scrollbar */
           ::-webkit-scrollbar {
@@ -64,11 +64,11 @@ export default function RootLayout({
             background: transparent;
           }
           ::-webkit-scrollbar-thumb {
-            background: rgba(241,205,171,0.3);
+            background: rgba(212,149,106,0.3);
             border-radius: 3px;
           }
           ::-webkit-scrollbar-thumb:hover {
-            background: rgba(241,205,171,0.5);
+            background: rgba(212,149,106,0.5);
           }
           /* RTL support */
           [dir="rtl"] {

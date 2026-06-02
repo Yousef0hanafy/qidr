@@ -82,13 +82,13 @@ export function ProductCard({ item, language, onClick }: ProductCardProps) {
       {/* Text content */}
       <div className={cn('flex-1 min-w-0 flex flex-col justify-center gap-1.5', isRTL ? 'text-right' : 'text-left')}>
         {/* Name */}
-        <h3 className="text-[15px] font-semibold text-[#F1CDAB] leading-tight truncate">
+        <h3 className="text-[15px] font-semibold text-[#D4956A] leading-tight truncate">
           {name}
         </h3>
 
         {/* Description */}
         {description && (
-          <p className="text-[#F3E5D8]/60 text-xs leading-snug line-clamp-1">
+          <p className="text-[#D4C8BB]/60 text-xs leading-snug line-clamp-1">
             {description}
           </p>
         )}
@@ -97,7 +97,7 @@ export function ProductCard({ item, language, onClick }: ProductCardProps) {
         <div className="flex items-center gap-2 flex-wrap">
           {/* Calories */}
           {item.calories && !isOutOfStock && (
-            <span className="inline-flex items-center gap-0.5 text-[#F3E5D8]/70 text-[11px]">
+            <span className="inline-flex items-center gap-0.5 text-[#D4C8BB]/70 text-[11px]">
               🔥 {item.calories} {language === 'ar' ? 'سعرة' : 'cal'}
             </span>
           )}
@@ -111,7 +111,7 @@ export function ProductCard({ item, language, onClick }: ProductCardProps) {
 
           {/* Price badge */}
           {priceInfo && !isOutOfStock && (
-            <span className="inline-flex items-center gap-1 bg-[#003327] text-[#F2F0E5] text-[11px] font-semibold px-2 py-[3px] rounded">
+            <span className="inline-flex items-center gap-1 bg-[#1A1410] text-[#F2EAE0] text-[11px] font-semibold px-2 py-[3px] rounded">
               {priceInfo.min.toFixed(2)} {getTranslation(language, 'SAR')}
             </span>
           )}
@@ -128,8 +128,8 @@ export function ProductCard({ item, language, onClick }: ProductCardProps) {
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-[#F1CDAB]/8">
-            <Flame className="w-8 h-8 text-[#F1CDAB]/20" />
+          <div className="w-full h-full flex items-center justify-center bg-[#D4956A]/8">
+            <Flame className="w-8 h-8 text-[#D4956A]/20" />
           </div>
         )}
       </div>

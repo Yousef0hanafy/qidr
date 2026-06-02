@@ -121,12 +121,12 @@ export default function FeedbackPage() {
         </div>
         <div className="flex items-center gap-3">
           {branches.length > 0 && (
-            <Select value={selectedBranchId} onValueChange={setSelectedBranchId}>
+            <Select value={selectedBranchId || "__all__"} onValueChange={(val) => setSelectedBranchId(val === "__all__" ? "" : val)}>
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="All Branches" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Branches</SelectItem>
+                <SelectItem value="__all__">All Branches</SelectItem>
                 {branches.map((b) => (
                   <SelectItem key={b.id} value={b.id}>
                     {b.name_en}

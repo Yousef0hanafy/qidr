@@ -67,7 +67,7 @@ export function PromotionBanner({ promotions }: PromotionBannerProps) {
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
             ) : (
-              <div className="absolute inset-0 bg-gradient-to-br from-[#F1CDAB]/30 to-[#F1CDAB]/10" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#D4956A]/30 to-[#D4956A]/10" />
             )}
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />

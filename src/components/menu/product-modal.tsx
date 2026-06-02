@@ -78,13 +78,13 @@ export function ProductModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         className={cn(
-          'max-w-lg sm:max-w-2xl p-0 gap-0 overflow-hidden rounded-2xl max-h-[90vh] overflow-y-auto bg-[#003327] border-white/10',
-          '[&>button]:top-3 [&>button]:right-3 [&>button]:text-[#F3E5D8]/60 [&>button]:hover:text-[#F1CDAB]'
+          'max-w-lg sm:max-w-2xl p-0 gap-0 overflow-hidden rounded-2xl max-h-[90vh] overflow-y-auto bg-[#1A1410] border-white/10',
+          '[&>button]:top-3 [&>button]:right-3 [&>button]:text-[#D4C8BB]/60 [&>button]:hover:text-[#D4956A]'
         )}
         showCloseButton={true}
       >
         {/* Image */}
-        <div className="relative aspect-[16/9] sm:aspect-video w-full overflow-hidden bg-[#002419]">
+        <div className="relative aspect-[16/9] sm:aspect-video w-full overflow-hidden bg-[#120D08]">
           {item.imageUrl ? (
             <AnimatePresence>
               <motion.img
@@ -98,14 +98,14 @@ export function ProductModal({
               />
             </AnimatePresence>
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-[#F1CDAB]/5">
-              <Flame className="w-16 h-16 text-[#F1CDAB]/15" />
+            <div className="w-full h-full flex items-center justify-center bg-[#D4956A]/5">
+              <Flame className="w-16 h-16 text-[#D4956A]/15" />
             </div>
           )}
 
           {/* Category badge */}
           <div className="absolute top-3 left-3">
-            <Badge className="bg-[#003327]/90 backdrop-blur-sm text-[#F1CDAB] border border-[#F1CDAB]/20 rounded-full px-3">
+            <Badge className="bg-[#1A1410]/90 backdrop-blur-sm text-[#D4956A] border border-[#D4956A]/20 rounded-full px-3">
               {categoryName}
             </Badge>
           </div>
@@ -113,7 +113,7 @@ export function ProductModal({
 
         {/* Content */}
         <div className="p-5 sm:p-6" dir={isRTL ? 'rtl' : 'ltr'} lang={language}>
-          <DialogTitle className="text-xl sm:text-2xl font-bold text-[#F1CDAB] mb-2">
+          <DialogTitle className="text-xl sm:text-2xl font-bold text-[#D4956A] mb-2">
             {name}
           </DialogTitle>
           <DialogDescription className="sr-only">
@@ -121,7 +121,7 @@ export function ProductModal({
           </DialogDescription>
 
           {description && (
-            <p className="text-[#F3E5D8]/60 text-sm sm:text-base leading-relaxed mb-4">
+            <p className="text-[#D4C8BB]/60 text-sm sm:text-base leading-relaxed mb-4">
               {description}
             </p>
           )}
@@ -129,7 +129,7 @@ export function ProductModal({
           {/* Quick info badges */}
           <div className="flex flex-wrap gap-2 mb-5">
             {item.calories && (
-              <div className="flex items-center gap-1.5 bg-[#F1CDAB]/10 text-[#F1CDAB] text-xs px-3 py-1.5 rounded-full">
+              <div className="flex items-center gap-1.5 bg-[#D4956A]/10 text-[#D4956A] text-xs px-3 py-1.5 rounded-full">
                 <Clock className="size-3.5" />
                 <span>
                   {item.calories} {getTranslation(language, 'calories')}
@@ -155,7 +155,7 @@ export function ProductModal({
           {/* Variants */}
           {item.variants.length > 0 && (
             <div>
-              <h3 className="font-bold text-[#F1CDAB] text-base mb-3">
+              <h3 className="font-bold text-[#D4956A] text-base mb-3">
                 {getTranslation(language, 'variants')}
               </h3>
               <div className="space-y-2">
@@ -172,11 +172,11 @@ export function ProductModal({
                     >
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-green-400" />
-                        <span className="text-sm font-medium text-[#F3E5D8]">
+                        <span className="text-sm font-medium text-[#D4C8BB]">
                           {vName}
                         </span>
                       </div>
-                      <span className="font-bold text-[#F1CDAB] text-sm">
+                      <span className="font-bold text-[#D4956A] text-sm">
                         {variant.price.toFixed(2)}{' '}
                         {getTranslation(language, 'SAR')}
                       </span>
@@ -196,14 +196,14 @@ export function ProductModal({
                       className="flex items-center justify-between p-3 rounded-xl bg-white/3 border border-white/5 opacity-50"
                     >
                       <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-[#F3E5D8]/30" />
-                        <span className="text-sm font-medium text-[#F3E5D8]/50 line-through">
+                        <div className="w-2 h-2 rounded-full bg-[#D4C8BB]/30" />
+                        <span className="text-sm font-medium text-[#D4C8BB]/50 line-through">
                           {vName}
                         </span>
                       </div>
                       <Badge
                         variant="secondary"
-                        className="text-xs text-[#F3E5D8]/40 bg-white/5"
+                        className="text-xs text-[#D4C8BB]/40 bg-white/5"
                       >
                         {getTranslation(language, 'out_of_stock')}
                       </Badge>
@@ -219,10 +219,10 @@ export function ProductModal({
             <>
               <Separator className="my-5 bg-white/10" />
               <div>
-                <h3 className="font-bold text-[#F1CDAB] text-base mb-2">
+                <h3 className="font-bold text-[#D4956A] text-base mb-2">
                   {getTranslation(language, 'allergen_info')}
                 </h3>
-                <p className="text-sm text-[#F3E5D8]/60 leading-relaxed">
+                <p className="text-sm text-[#D4C8BB]/60 leading-relaxed">
                   {item.allergens}
                 </p>
               </div>
@@ -234,10 +234,10 @@ export function ProductModal({
             <>
               <Separator className="my-5 bg-white/10" />
               <div>
-                <h3 className="font-bold text-[#F1CDAB] text-base mb-2">
+                <h3 className="font-bold text-[#D4956A] text-base mb-2">
                   {getTranslation(language, 'nutrition_info')}
                 </h3>
-                <p className="text-sm text-[#F3E5D8]/60 leading-relaxed whitespace-pre-line">
+                <p className="text-sm text-[#D4C8BB]/60 leading-relaxed whitespace-pre-line">
                   {item.nutritionalFacts}
                 </p>
               </div>

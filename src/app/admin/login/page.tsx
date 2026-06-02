@@ -103,8 +103,8 @@ export default function AdminLoginPage() {
       {/* Branding */}
       <div className="mb-8 flex flex-col items-center gap-2">
         <div className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-[#003327]">
-            <Lock className="size-5 text-[#F1CDAB]" />
+          <div className="flex size-10 items-center justify-center rounded-xl bg-[#1A1410]">
+            <Lock className="size-5 text-[#D4956A]" />
           </div>
           <div className="flex flex-col">
             <span className="text-2xl font-bold tracking-tight">قدر</span>
