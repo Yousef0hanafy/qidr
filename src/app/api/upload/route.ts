@@ -29,15 +29,15 @@ export async function POST(request: NextRequest) {
       await mkdir(uploadsDir, { recursive: true });
     }
 
-    // Generate unique filename
-    const ext = path.extname(file.name) || '.webp';
-    const uniqueName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}${ext}`;
+    // Generate unique filename — always .jpg since sharp outputs JPEG
+    const uniqueName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.jpg`;
     const outputPath = path.join(uploadsDir, uniqueName);
 
-    // Process image with sharp (resize + optimize)
-    await sharp(buffer)
+    // Process image with sharp (resize + optimize + convert to JPEG)
+    await sharp(buffer, { failOn: 'none' })
       .resize({ width: 800, withoutEnlargement: true })
-      .jpeg({ quality: 80 })
+      .jpeg({ quality: 85, mozjpeg: true })
+      .rotate() // auto-orient based on EXIF
       .toFile(outputPath);
 
     const url = `/uploads/${uniqueName}`;
@@ -45,6 +45,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ url, filename: uniqueName });
   } catch (error) {
     console.error('Error uploading file:', error);
-    return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to upload file. Make sure the image is a valid format (JPG, PNG, WebP).' },
+      { status: 500 }
+    );
   }
 }

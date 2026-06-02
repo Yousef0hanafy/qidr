@@ -51,8 +51,9 @@ prompt
 
 server.log
 
-# Uploads
+# Uploads (user-uploaded images via admin)
 upload/
+/public/uploads/
 
 # Skills directory
 /skills/
