@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Branch {
+  id          String   @id @default(cuid())
+  name_ar     String
+  name_en     String
+  slug        String   @unique
+  address     String?
+  googleMapLink String?
+  phone       String?
+  whatsapp    String?
+  instagram   String?
+  tiktok      String?
+  snapchat    String?
+  facebook    String?
+  websiteUrl  String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  itemVariants  BranchItemVariant[]
+  promotions    PromotionBranch[]
+  feedbacks     Feedback[]
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name_ar   String
+  name_en   String
+  imageUrl  String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items Item[]
+}
+
+model Item {
+  id              String   @id @default(cuid())
+  categoryId      String
+  name_ar         String
+  name_en         String
+  description_ar  String?
+  description_en  String?
+  imageUrl        String?
+  calories        Int?
+  allergens       String?
+  nutritionalFacts String?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  category      Category             @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  itemVariants  BranchItemVariant[]
+}
+
+model BranchItemVariant {
+  id             String  @id @default(cuid())
+  branchId       String
+  itemId         String
+  variantName_ar String
+  variantName_en String
+  price          Float
+  available      Boolean @default(true)
+  status         String  @default("available") // available, out_of_stock, hidden
+
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  item   Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([branchId, itemId, variantName_ar])
+}
+
+model Promotion {
+  id        String   @id @default(cuid())
+  title_ar  String
+  title_en  String
+  imageUrl  String?
+  startDate DateTime
+  endDate   DateTime
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  branches PromotionBranch[]
+}
+
+model PromotionBranch {
+  promotionId String
+  branchId    String
+  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+  branch      Branch    @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@id([promotionId, branchId])
+}
+
+model Feedback {
+  id             String   @id @default(cuid())
+  branchId       String
+  rating         Int
+  customerName   String?
+  feedbackMessage String?
+  createdAt      DateTime @default(now())
+
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+}
+
+model Settings {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+}
+
+model UploadedFile {
+  id        String   @id @default(cuid())
+  filename  String
+  url       String
+  mimeType  String?
+  size      Int?
+  createdAt DateTime @default(now())
+}
