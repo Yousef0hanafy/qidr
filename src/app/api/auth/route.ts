@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { password } = body;
 
-    const adminPassword = process.env.ADMIN_PASSWORD || 'qidr-admin-secret-key-min-32-characters-long!';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
 
     if (password !== adminPassword) {
       return NextResponse.json({ error: 'Invalid password' }, { status: 401 });

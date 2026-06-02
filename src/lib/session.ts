@@ -2,7 +2,7 @@ import { SignJWT, jwtVerify } from 'jose'
 import { cookies } from 'next/headers'
 
 const secretKey = new TextEncoder().encode(
-  process.env.ADMIN_PASSWORD || 'qidr-admin-secret-key-min-32-characters-long!'
+  process.env.ADMIN_PASSWORD || 'admin123-secret-key-jwt-signing!'
 )
 
 const cookieName = 'qidr-admin-session'
