@@ -63,65 +63,71 @@ export function CategoryNav({
     <nav
       dir={language === 'ar' ? 'rtl' : 'ltr'}
       lang={language}
-      className="sticky top-0 z-40 bg-[#1A1410] shadow-lg"
+      className="sticky top-0 z-40"
     >
-      <div
-        ref={scrollRef}
-        className="flex gap-4 overflow-x-auto px-4 py-4 hide-scrollbar"
-      >
-        {categories.map((cat) => {
-          const isActive = selectedCategory === cat.id
-          const catName = language === 'ar' ? cat.name_ar : cat.name_en
+      {/* Semi-transparent background - opacity on bg only, not images */}
+      <div className="absolute inset-0 bg-[#1A1410]/75 backdrop-blur-md" />
+      
+      {/* Content centered */}
+      <div className="relative">
+        <div
+          ref={scrollRef}
+          className="flex gap-5 overflow-x-auto px-4 py-4 hide-scrollbar justify-start sm:justify-center"
+        >
+          {categories.map((cat) => {
+            const isActive = selectedCategory === cat.id
+            const catName = language === 'ar' ? cat.name_ar : cat.name_en
 
-          return (
-            <button
-              key={cat.id}
-              ref={(el) => {
-                if (el) itemRefs.current.set(cat.id, el)
-              }}
-              onClick={() => handleClick(cat.id)}
-              className="shrink-0 flex flex-col items-center gap-2 group focus:outline-none"
-              aria-label={catName}
-            >
-              {/* Circular thumbnail - 70px */}
-              <div
-                className={cn(
-                  'w-[68px] h-[68px] rounded-full overflow-hidden transition-all duration-300',
-                  isActive
-                    ? 'ring-[3px] ring-[#D4956A] ring-offset-2 ring-offset-[#1A1410] scale-105'
-                    : 'ring-[2px] ring-white/15 group-hover:ring-[#D4956A]/40'
-                )}
+            return (
+              <button
+                key={cat.id}
+                ref={(el) => {
+                  if (el) itemRefs.current.set(cat.id, el)
+                }}
+                onClick={() => handleClick(cat.id)}
+                className="shrink-0 flex flex-col items-center gap-2 group focus:outline-none"
+                aria-label={catName}
               >
-                {cat.imageUrl ? (
-                  <img
-                    src={cat.imageUrl}
-                    alt={catName}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-[#D4956A]/15 flex items-center justify-center">
-                    <span className="text-[#D4956A] text-lg font-bold">
-                      {catName.charAt(0)}
-                    </span>
-                  </div>
-                )}
-              </div>
+                {/* Circular thumbnail - 68px */}
+                <div
+                  className={cn(
+                    'w-[68px] h-[68px] rounded-full overflow-hidden transition-all duration-300',
+                    isActive
+                      ? 'ring-[3px] ring-[#D4956A] ring-offset-2 ring-offset-[#1A1410]/75 scale-105'
+                      : 'ring-[2px] ring-white/15 group-hover:ring-[#D4956A]/40'
+                  )}
+                >
+                  {cat.imageUrl ? (
+                    <img
+                      src={cat.imageUrl}
+                      alt={catName}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-[#D4956A]/15 flex items-center justify-center">
+                      <span className="text-[#D4956A] text-lg font-bold">
+                        {catName.charAt(0)}
+                      </span>
+                    </div>
+                  )}
+                </div>
 
-              {/* Category name */}
-              <span
-                className={cn(
-                  'text-xs text-center transition-colors duration-300 max-w-[76px] line-clamp-1',
-                  isActive
-                    ? 'text-[#D4956A] font-semibold'
-                    : 'text-[#D4C8BB]/70 group-hover:text-[#D4C8BB]'
-                )}
-              >
-                {catName}
-              </span>
-            </button>
-          )
-        })}
+                {/* Category name */}
+                <span
+                  className={cn(
+                    'text-xs text-center transition-colors duration-300 max-w-[76px] line-clamp-1',
+                    isActive
+                      ? 'text-[#D4956A] font-semibold'
+                      : 'text-[#D4C8BB]/70 group-hover:text-[#D4C8BB]'
+                  )}
+                >
+                  {catName}
+                </span>
+              </button>
+            )
+          })}
+        </div>
       </div>
     </nav>
   )

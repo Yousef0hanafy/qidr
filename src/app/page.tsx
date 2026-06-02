@@ -9,7 +9,6 @@ import { ProductGrid } from '@/components/menu/product-grid'
 import { ProductModal } from '@/components/menu/product-modal'
 import { ReviewModal } from '@/components/menu/review-modal'
 import { MenuFooter } from '@/components/menu/menu-footer'
-import { LanguageSwitcher } from '@/components/menu/language-switcher'
 
 interface Branch {
   id: string
@@ -66,6 +65,8 @@ interface Promotion {
   id: string
   title_ar: string
   title_en: string
+  description_ar?: string
+  description_en?: string
   imageUrl?: string
   startDate: string
   endDate: string
@@ -152,7 +153,7 @@ export default function MenuPage() {
     fetchItems()
   }, [selectedBranch])
 
-  // ── Fetch promotions ────────────────────────────────────────────
+  // ── Fetch promotions (expired are filtered by API) ────────────────
   useEffect(() => {
     async function fetchPromotions() {
       try {
@@ -230,10 +231,7 @@ export default function MenuPage() {
       lang={language}
       className="min-h-screen flex flex-col bg-[#1A1410]"
     >
-      {/* Language Switcher — fixed */}
-      <LanguageSwitcher />
-
-      {/* Compact Hero Header */}
+      {/* Hero Section with Language Switcher integrated */}
       <HeroSection
         branches={branches}
         selectedBranch={selectedBranch}
@@ -242,7 +240,7 @@ export default function MenuPage() {
         }}
       />
 
-      {/* Promotions Banner */}
+      {/* Promotions Banner (expired filtered by API) */}
       {promotions.length > 0 && (
         <div className="py-3">
           <PromotionBanner promotions={promotions} />
@@ -307,7 +305,7 @@ export default function MenuPage() {
                     <div className="h-2 bg-white/5 rounded w-1/2" />
                     <div className="h-3 bg-white/8 rounded w-1/4" />
                   </div>
-                  <div className="w-[100px] h-[100px] bg-white/8 rounded-lg shrink-0" />
+                  <div className="w-[72px] h-[72px] sm:w-[80px] sm:h-[80px] bg-white/8 rounded-xl shrink-0" />
                 </div>
               ))}
             </div>

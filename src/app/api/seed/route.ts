@@ -556,7 +556,7 @@ export async function POST(request: Request) {
         title_ar: 'عرض الافتتاح',
         title_en: 'Grand Opening Offer',
         startDate: new Date('2024-01-01'),
-        endDate: new Date('2025-12-31'),
+        endDate: new Date('2027-12-31'),
         active: true,
         branches: {
           create: [

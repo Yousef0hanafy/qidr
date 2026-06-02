@@ -12,6 +12,8 @@ import {
   MessageSquare,
   LogOut,
   Menu,
+  ArrowLeft,
+  ExternalLink,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -98,8 +100,19 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         })}
       </nav>
 
+      {/* Back to Website */}
+      <div className="border-t px-2 py-3">
+        <a
+          href="/"
+          className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+        >
+          <ExternalLink className="size-4 shrink-0" />
+          <span>Back to Website</span>
+        </a>
+      </div>
+
       {/* Logout */}
-      <div className="border-t px-2 py-4">
+      <div className="px-2 py-2">
         <Button
           variant="ghost"
           className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive"

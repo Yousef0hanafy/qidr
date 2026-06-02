@@ -11,6 +11,7 @@ import {
   Star,
   ExternalLink,
   UtensilsCrossed,
+  Share2,
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useMenuStore } from '@/store/menu-store'
@@ -29,6 +30,7 @@ interface Branch {
   tiktok: string | null
   snapchat: string | null
   facebook: string | null
+  twitter?: string | null
   websiteUrl: string | null
   isActive: boolean
 }
@@ -39,35 +41,60 @@ interface MenuFooterProps {
   onRateClick?: () => void
 }
 
-export function MenuFooter({ branch, language }: MenuFooterProps) {
+export function MenuFooter({ branch, language, onRateClick }: MenuFooterProps) {
   const { setIsReviewModalOpen } = useMenuStore()
   const isRTL = language === 'ar'
 
   const socialLinks = branch
     ? [
+        // Phone call
+        branch.phone && {
+          icon: Phone,
+          href: `tel:${branch.phone}`,
+          label: 'Phone',
+          color: 'hover:text-[#D4956A]',
+        },
+        // WhatsApp
+        branch.whatsapp && {
+          icon: MessageCircle,
+          href: `https://wa.me/${branch.whatsapp.replace(/[^0-9]/g, '')}`,
+          label: 'WhatsApp',
+          color: 'hover:text-green-400',
+        },
+        // Instagram
         branch.instagram && {
           icon: Instagram,
           href: branch.instagram,
           label: 'Instagram',
           color: 'hover:text-pink-400',
         },
+        // TikTok
         branch.tiktok && {
           icon: Music2,
           href: branch.tiktok,
           label: 'TikTok',
           color: 'hover:text-white',
         },
+        // Snapchat
         branch.snapchat && {
           icon: Ghost,
           href: branch.snapchat,
           label: 'Snapchat',
           color: 'hover:text-yellow-400',
         },
+        // Facebook
         branch.facebook && {
           icon: Facebook,
           href: branch.facebook,
           label: 'Facebook',
           color: 'hover:text-blue-400',
+        },
+        // Location
+        branch.googleMapLink && {
+          icon: MapPin,
+          href: branch.googleMapLink,
+          label: 'Location',
+          color: 'hover:text-red-400',
         },
       ].filter(Boolean)
     : []
@@ -81,7 +108,7 @@ export function MenuFooter({ branch, language }: MenuFooterProps) {
       <div className="max-w-[552px] mx-auto px-4 pt-10 pb-8">
         {/* Social icons row */}
         {socialLinks.length > 0 && (
-          <div className="flex justify-center gap-4 mb-8">
+          <div className="flex justify-center gap-3 sm:gap-4 mb-8 flex-wrap">
             {socialLinks.map((link) =>
               link ? (
                 <a
@@ -108,17 +135,6 @@ export function MenuFooter({ branch, language }: MenuFooterProps) {
             >
               <Phone className="size-4" />
               <span>{branch.phone}</span>
-            </a>
-          )}
-          {branch?.whatsapp && (
-            <a
-              href={`https://wa.me/${branch.whatsapp.replace(/[^0-9]/g, '')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 text-[#D4C8BB]/60 hover:text-green-400 transition-colors text-sm"
-            >
-              <MessageCircle className="size-4" />
-              <span>WhatsApp</span>
             </a>
           )}
           {branch?.address && (

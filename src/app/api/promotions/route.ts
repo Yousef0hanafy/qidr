@@ -7,9 +7,13 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const branchId = searchParams.get('branchId');
 
+    const now = new Date();
+
     const promotions = await db.promotion.findMany({
       where: {
         active: true,
+        startDate: { lte: now },
+        endDate: { gte: now },
         ...(branchId
           ? {
               branches: {

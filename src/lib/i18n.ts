@@ -31,8 +31,9 @@ const translations: Record<Language, Record<string, string>> = {
     contact_us: 'تواصل معنا',
     location: 'الموقع',
     navigate: 'التنقل',
-    copyright: '© جميع الحقوق محفوظة',
+    copyright: '© جميع الحقوق محفوظة ',
     powered_by: 'بدعم من',
+    welcome_message: 'أهلاً وسهلاً بكم في قدر',
 
     // Auth & Admin
     admin: 'الإدارة',
@@ -175,8 +176,9 @@ const translations: Record<Language, Record<string, string>> = {
     contact_us: 'Contact Us',
     location: 'Location',
     navigate: 'Navigate',
-    copyright: '© All Rights Reserved',
+    copyright: '© All Rights Reserved ',
     powered_by: 'Powered by',
+    welcome_message: 'Welcome to Qidr',
 
     // Auth & Admin
     admin: 'Admin',
