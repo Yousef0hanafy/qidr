@@ -1,11 +1,12 @@
 'use client'
 
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { useMenuStore } from '@/store/menu-store'
+import { useMenuStore, type MenuMode } from '@/store/menu-store'
 import { HeroSection } from '@/components/menu/hero-section'
 import { PromotionBanner } from '@/components/menu/promotion-banner'
 import { CategoryNav } from '@/components/menu/category-nav'
 import { ProductGrid } from '@/components/menu/product-grid'
+import { NutritionGuide } from '@/components/menu/nutrition-guide'
 import { ProductModal } from '@/components/menu/product-modal'
 import { ReviewModal } from '@/components/menu/review-modal'
 import { MenuFooter } from '@/components/menu/menu-footer'
@@ -80,6 +81,7 @@ export default function MenuPage() {
     selectedCategory,
     setSelectedCategory,
     searchQuery,
+    menuMode,
     isProductModalOpen,
     selectedProduct,
     closeProductModal,
@@ -185,6 +187,43 @@ export default function MenuPage() {
 
   const currentBranch = branches.find((b) => b.id === selectedBranch)
 
+  // ── Filter items based on menuMode ──────────────────────────────
+  const filteredByMode = useCallback((): Item[] => {
+    // "menu" = show all items
+    if (menuMode === 'menu') return items
+
+    // "breakfast" = filter items whose category name contains breakfast keywords
+    // Since we don't have a dedicated breakfast category, show a curated subset
+    if (menuMode === 'breakfast') {
+      const breakfastItems = items.filter((item) => {
+        const catName = item.category?.name_en?.toLowerCase() || ''
+        const catNameAr = item.category?.name_ar || ''
+        // Match breakfast-related items: hot drinks, cold drinks, desserts
+        return (
+          catName.includes('hot drink') ||
+          catName.includes('cold drink') ||
+          catName.includes('dessert') ||
+          catName.includes('beverage') ||
+          catNameAr.includes('مشروبات') ||
+          catNameAr.includes('حلويات')
+        )
+      })
+      return breakfastItems.length > 0 ? breakfastItems : items
+    }
+
+    // "nutrition" = show all items (nutrition guide handles display)
+    return items
+  }, [items, menuMode])
+
+  // ── Get visible categories for the current mode ────────────────
+  const visibleCategories = useCallback((): Category[] => {
+    const modeItems = filteredByMode()
+    const catIds = new Set(modeItems.map((i) => i.categoryId))
+    return categories
+      .filter((c) => catIds.has(c.id))
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+  }, [filteredByMode, categories])
+
   // ── Category nav click → scroll to section ──────────────────────
   const handleCategorySelect = useCallback(
     (categoryId: string) => {
@@ -225,13 +264,25 @@ export default function MenuPage() {
     []
   )
 
+  // ── Whether to show category nav + product grid (not for nutrition) ──
+  const showMenuContent = menuMode === 'menu' || menuMode === 'breakfast'
+  const displayItems = filteredByMode()
+  const displayCategories = visibleCategories()
+
+  // ── Mode title ──────────────────────────────────────────────────
+  const modeTitle = menuMode === 'breakfast'
+    ? (language === 'ar' ? 'فطور' : 'Breakfast')
+    : menuMode === 'nutrition'
+      ? (language === 'ar' ? 'الارشادات الغذائية' : 'Nutritional Guide')
+      : null
+
   return (
     <div
       dir={isRTL ? 'rtl' : 'ltr'}
       lang={language}
       className="min-h-screen flex flex-col bg-[#1A1410]"
     >
-      {/* Hero Section with Language Switcher integrated */}
+      {/* Hero Section */}
       <HeroSection
         branches={branches}
         selectedBranch={selectedBranch}
@@ -240,25 +291,42 @@ export default function MenuPage() {
         }}
       />
 
-      {/* Promotions Banner (expired filtered by API) */}
-      {promotions.length > 0 && (
+      {/* Promotions Banner */}
+      {promotions.length > 0 && menuMode !== 'nutrition' && (
         <div className="py-3">
           <PromotionBanner promotions={promotions} />
         </div>
       )}
 
-      {/* Category Navigation — sticky with circular thumbnails */}
-      {categories.length > 0 && selectedBranch && (
+      {/* Category Navigation — sticky, only for menu/breakfast modes */}
+      {showMenuContent && displayCategories.length > 0 && selectedBranch && (
         <CategoryNav
-          categories={categories}
+          categories={displayCategories}
           selectedCategory={selectedCategory}
           onSelect={handleCategorySelect}
         />
       )}
 
-      {/* Menu Content — centered, max-w like reference */}
+      {/* Mode title bar for breakfast */}
+      {menuMode === 'breakfast' && (
+        <div className="max-w-[552px] mx-auto px-4 pt-4 pb-2">
+          <div className="flex items-center gap-3">
+            <h2 className="text-base font-bold text-[#D4956A]">
+              {language === 'ar' ? 'قائمة الفطور' : 'Breakfast Menu'}
+            </h2>
+            <div className="flex-1 h-px bg-[#D4956A]/15" />
+          </div>
+          <p className="text-[11px] text-[#D4C8BB]/40 mt-1">
+            {language === 'ar'
+              ? 'مشروبات ساخنة وباردة وحلويات لبدء يومك'
+              : 'Hot & cold beverages and desserts to start your day'}
+          </p>
+        </div>
+      )}
+
+      {/* Main Content Area */}
       <main className="flex-1 pb-8">
-        <div className="max-w-[552px] mx-auto">
+        <div className="max-w-[552px] mx-auto px-4">
           {!selectedBranch ? (
             <div className="flex flex-col items-center justify-center py-24 px-4 text-center">
               <div className="w-14 h-14 rounded-full bg-[#D4956A]/10 flex items-center justify-center mb-5">
@@ -309,10 +377,18 @@ export default function MenuPage() {
                 </div>
               ))}
             </div>
-          ) : (
-            <ProductGrid
+          ) : menuMode === 'nutrition' ? (
+            /* ─── NUTRITION GUIDE VIEW ─── */
+            <NutritionGuide
               items={items}
-              categories={categories}
+              language={language}
+              onProductClick={handleProductClick}
+            />
+          ) : (
+            /* ─── MENU / BREAKFAST VIEW ─── */
+            <ProductGrid
+              items={displayItems}
+              categories={displayCategories}
               language={language}
               searchQuery={searchQuery}
               onProductClick={handleProductClick}

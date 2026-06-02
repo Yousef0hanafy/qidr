@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
-import { Search, X, ChevronDown, MapPin, Globe, Coffee, UtensilsCrossed, Leaf } from 'lucide-react'
+import { Search, X, ChevronDown, MapPin, Globe } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useMenuStore } from '@/store/menu-store'
+import { useMenuStore, type MenuMode } from '@/store/menu-store'
 import { getTranslation } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
@@ -27,7 +27,7 @@ export function HeroSection({
   selectedBranch,
   onSelectBranch,
 }: HeroSectionProps) {
-  const { language, searchQuery, setSearchQuery } = useMenuStore()
+  const { language, searchQuery, setSearchQuery, menuMode, setMenuMode } = useMenuStore()
   const isRTL = language === 'ar'
   const [localSearch, setLocalSearch] = useState(searchQuery)
   const [isFocused, setIsFocused] = useState(false)
@@ -56,28 +56,25 @@ export function HeroSection({
       : currentBranch.name_en
     : getTranslation(language, 'select_branch')
 
-  // Menu type cards - 3 circular navigation types like the reference
-  const menuTypes = [
+  // Menu type cards — each controls what content is shown below
+  const menuTypes: { id: MenuMode; name_ar: string; name_en: string; image: string }[] = [
     {
       id: 'breakfast',
       name_ar: 'الفطور',
       name_en: 'Breakfast',
       image: '/images/menu-types/breakfast.png',
-      icon: Coffee,
     },
     {
       id: 'menu',
       name_ar: 'منيو المطعم',
       name_en: 'Restaurant Menu',
       image: '/images/menu-types/restaurant-menu.png',
-      icon: UtensilsCrossed,
     },
     {
       id: 'nutrition',
       name_ar: 'الارشادات الغذائية',
       name_en: 'Nutritional Guide',
       image: '/images/menu-types/nutritional-guide.png',
-      icon: Leaf,
     },
   ]
 
@@ -87,75 +84,67 @@ export function HeroSection({
       lang={language}
       className="relative z-30"
     >
-      {/* ─── HERO IMAGE SECTION ─── */}
-      {/* z-30: Highest layer — background image sits behind everything */}
-      <div className="relative w-full h-[260px] sm:h-[300px]">
+      {/* ─── LOGO + NAME AT THE VERY TOP ─── */}
+      <div className="bg-[#1A1410] border-b border-white/5">
+        <div className="max-w-[552px] mx-auto px-4 pt-4 pb-3 flex items-center justify-between">
+          {/* Logo + Name */}
+          <motion.div
+            initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4 }}
+            className="flex items-center gap-2.5"
+          >
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border-2 border-[#D4956A]/40 shadow-md">
+              <Image
+                src="/Qidr.avif"
+                alt="Qidr Logo"
+                width={44}
+                height={44}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <h1 className="text-lg sm:text-xl font-bold text-[#D4956A] leading-tight">
+                {language === 'ar' ? 'قدر' : 'Qidr'}
+              </h1>
+              <p className="text-[10px] text-[#D4C8BB]/40 leading-tight">
+                {getTranslation(language, 'welcome_message')}
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Language switcher */}
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+            onClick={() => useMenuStore.getState().setLanguage(language === 'ar' ? 'en' : 'ar')}
+            className="flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-3 py-1.5 text-[#D4C8BB]/60 hover:text-[#D4956A] hover:border-[#D4956A]/25 text-xs transition-all"
+          >
+            <Globe className="size-3" />
+            <span>{language === 'ar' ? 'EN' : 'عربي'}</span>
+          </motion.button>
+        </div>
+      </div>
+
+      {/* ─── HERO IMAGE ─── */}
+      <div className="relative w-full h-[200px] sm:h-[240px]">
         <img
           src="/images/hero-bg.png"
           alt="Qidr Restaurant"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        {/* Dark gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-[#1A1410]" />
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#1A1410] to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1A1410]/60 via-black/20 to-[#1A1410]" />
+        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[#1A1410] to-transparent" />
       </div>
 
-      {/* ─── HERO CONTENT OVERLAY ─── */}
-      {/* z-30: Logo + name on top of the hero image */}
-      <div className="absolute inset-0 z-30 flex flex-col items-center pointer-events-none">
-        {/* Language switcher — pointer-events-auto so it's clickable */}
-        <div className="absolute top-3 left-3 sm:top-4 sm:left-4 pointer-events-auto z-[35]">
-          <button
-            onClick={() => useMenuStore.getState().setLanguage(language === 'ar' ? 'en' : 'ar')}
-            className="flex items-center gap-1.5 bg-black/30 backdrop-blur-sm rounded-full px-3 py-1.5 text-white/80 hover:text-white text-xs transition-colors"
-          >
-            <Globe className="size-3.5" />
-            <span>{language === 'ar' ? 'EN' : 'عربي'}</span>
-          </button>
-        </div>
-
-        {/* Logo + Restaurant name */}
-        <div className="mt-auto mb-4 sm:mb-6 flex flex-col items-center gap-2">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-          >
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-[3px] border-[#D4956A]/50 shadow-lg shadow-black/30">
-              <Image
-                src="/Qidr.avif"
-                alt="Qidr Logo"
-                width={96}
-                height={96}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            className="text-center"
-          >
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#D4956A] drop-shadow-lg">
-              {language === 'ar' ? 'قدر' : 'Qidr'}
-            </h1>
-            <p className="text-white/50 text-xs mt-0.5">
-              {getTranslation(language, 'welcome_message')}
-            </p>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* ─── BRANCH SELECTOR + SEARCH ─── */}
-      {/* z-20: Below hero content, above category nav. Branch dropdown gets z-50 */}
-      <div className="relative z-20 max-w-[552px] mx-auto px-4 -mt-2">
-        {/* Branch selector - compact */}
+      {/* ─── BRANCH + SEARCH + 3 MENU TYPE CARDS ─── */}
+      <div className="relative z-20 max-w-[552px] mx-auto px-4 -mt-4">
+        {/* Branch selector — compact */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.15 }}
+          transition={{ duration: 0.35, delay: 0.1 }}
           className="mb-3"
         >
           <div className="relative">
@@ -173,7 +162,6 @@ export function HeroSection({
               )} />
             </button>
 
-            {/* Branch dropdown — z-50 so it goes over everything */}
             <AnimatePresence>
               {showBranchPicker && (
                 <motion.div
@@ -209,8 +197,8 @@ export function HeroSection({
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
-          className="mb-4"
+          transition={{ duration: 0.35, delay: 0.15 }}
+          className="mb-5"
         >
           <div
             className={cn(
@@ -256,25 +244,30 @@ export function HeroSection({
           </div>
         </motion.div>
 
-        {/* ─── 3 MENU TYPE CARDS ─── */}
-        {/* الفطور / منيو المطعم / الارشادات الغذائية */}
+        {/* ─── 3 MENU TYPE CARDS — functional, active state ─── */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.25 }}
-          className="flex justify-center gap-6 sm:gap-10 mb-4"
+          transition={{ duration: 0.45, delay: 0.2 }}
+          className="flex justify-center gap-6 sm:gap-10 mb-5"
         >
-          {menuTypes.map((type, idx) => {
-            const Icon = type.icon
+          {menuTypes.map((type) => {
+            const isActive = menuMode === type.id
             return (
               <button
                 key={type.id}
+                onClick={() => setMenuMode(type.id)}
                 className="flex flex-col items-center gap-2 group focus:outline-none"
               >
                 <motion.div
                   whileHover={{ scale: 1.08 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-[72px] h-[72px] sm:w-[80px] sm:h-[80px] rounded-full overflow-hidden ring-2 ring-[#D4956A]/25 group-hover:ring-[#D4956A]/60 transition-all duration-300 shadow-lg shadow-black/20"
+                  whileTap={{ scale: 0.92 }}
+                  className={cn(
+                    "w-[68px] h-[68px] sm:w-[78px] sm:h-[78px] rounded-full overflow-hidden transition-all duration-300 shadow-lg shadow-black/20",
+                    isActive
+                      ? "ring-[3px] ring-[#D4956A] ring-offset-2 ring-offset-[#1A1410] scale-105"
+                      : "ring-2 ring-[#D4956A]/20 group-hover:ring-[#D4956A]/50"
+                  )}
                 >
                   <img
                     src={type.image}
@@ -283,7 +276,12 @@ export function HeroSection({
                     loading="lazy"
                   />
                 </motion.div>
-                <span className="text-[11px] sm:text-xs text-[#D4956A]/80 group-hover:text-[#D4956A] font-medium transition-colors text-center max-w-[80px] sm:max-w-[90px] leading-tight">
+                <span className={cn(
+                  "text-[10px] sm:text-[11px] font-medium transition-colors text-center max-w-[76px] sm:max-w-[86px] leading-tight",
+                  isActive
+                    ? "text-[#D4956A]"
+                    : "text-[#D4C8BB]/50 group-hover:text-[#D4C8BB]/80"
+                )}>
                   {isRTL ? type.name_ar : type.name_en}
                 </span>
               </button>

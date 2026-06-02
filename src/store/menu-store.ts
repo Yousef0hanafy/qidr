@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 
 type Language = 'ar' | 'en'
+export type MenuMode = 'menu' | 'breakfast' | 'nutrition'
 
 interface Product {
   id: string
@@ -23,6 +24,10 @@ interface MenuState {
   // Category filter
   selectedCategory: string | null
   setSelectedCategory: (categoryId: string | null) => void
+
+  // Menu mode: which of the 3 type cards is active
+  menuMode: MenuMode
+  setMenuMode: (mode: MenuMode) => void
 
   // Product detail modal
   isProductModalOpen: boolean
@@ -54,6 +59,10 @@ export const useMenuStore = create<MenuState>((set, get) => ({
   // Category filter
   selectedCategory: null,
   setSelectedCategory: (categoryId) => set({ selectedCategory: categoryId }),
+
+  // Menu mode
+  menuMode: 'menu',
+  setMenuMode: (mode: MenuMode) => set({ menuMode: mode, selectedCategory: null }),
 
   // Product detail modal
   isProductModalOpen: false,
