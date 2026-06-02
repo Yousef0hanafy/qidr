@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
 type Language = 'ar' | 'en'
-export type MenuMode = 'menu' | 'breakfast' | 'nutrition'
+export type MenuMode = 'menu' | 'snacks' | 'nutrition'
 
 interface Product {
   id: string

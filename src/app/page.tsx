@@ -192,23 +192,22 @@ export default function MenuPage() {
     // "menu" = show all items
     if (menuMode === 'menu') return items
 
-    // "breakfast" = filter items whose category name contains breakfast keywords
-    // Since we don't have a dedicated breakfast category, show a curated subset
-    if (menuMode === 'breakfast') {
-      const breakfastItems = items.filter((item) => {
+    // "snacks" = filter items whose category is appetizers, desserts, drinks
+    if (menuMode === 'snacks') {
+      const snacksItems = items.filter((item) => {
         const catName = item.category?.name_en?.toLowerCase() || ''
         const catNameAr = item.category?.name_ar || ''
-        // Match breakfast-related items: hot drinks, cold drinks, desserts
         return (
+          catName.includes('appetizer') ||
           catName.includes('hot drink') ||
           catName.includes('cold drink') ||
           catName.includes('dessert') ||
-          catName.includes('beverage') ||
+          catNameAr.includes('مقبلات') ||
           catNameAr.includes('مشروبات') ||
           catNameAr.includes('حلويات')
         )
       })
-      return breakfastItems.length > 0 ? breakfastItems : items
+      return snacksItems.length > 0 ? snacksItems : items
     }
 
     // "nutrition" = show all items (nutrition guide handles display)
@@ -265,13 +264,13 @@ export default function MenuPage() {
   )
 
   // ── Whether to show category nav + product grid (not for nutrition) ──
-  const showMenuContent = menuMode === 'menu' || menuMode === 'breakfast'
+  const showMenuContent = menuMode === 'menu' || menuMode === 'snacks'
   const displayItems = filteredByMode()
   const displayCategories = visibleCategories()
 
   // ── Mode title ──────────────────────────────────────────────────
-  const modeTitle = menuMode === 'breakfast'
-    ? (language === 'ar' ? 'فطور' : 'Breakfast')
+  const modeTitle = menuMode === 'snacks'
+    ? (language === 'ar' ? 'تسالي' : 'Snacks')
     : menuMode === 'nutrition'
       ? (language === 'ar' ? 'الارشادات الغذائية' : 'Nutritional Guide')
       : null
@@ -298,7 +297,7 @@ export default function MenuPage() {
         </div>
       )}
 
-      {/* Category Navigation — sticky, only for menu/breakfast modes */}
+      {/* Category Navigation — sticky, only for menu/snacks modes */}
       {showMenuContent && displayCategories.length > 0 && selectedBranch && (
         <CategoryNav
           categories={displayCategories}
@@ -307,19 +306,19 @@ export default function MenuPage() {
         />
       )}
 
-      {/* Mode title bar for breakfast */}
-      {menuMode === 'breakfast' && (
+      {/* Mode title bar for snacks */}
+      {menuMode === 'snacks' && (
         <div className="max-w-[552px] mx-auto px-4 pt-4 pb-2">
           <div className="flex items-center gap-3">
             <h2 className="text-base font-bold text-[#D4956A]">
-              {language === 'ar' ? 'قائمة الفطور' : 'Breakfast Menu'}
+              {language === 'ar' ? 'قائمة التسالي' : 'Snacks Menu'}
             </h2>
             <div className="flex-1 h-px bg-[#D4956A]/15" />
           </div>
           <p className="text-[11px] text-[#D4C8BB]/40 mt-1">
             {language === 'ar'
-              ? 'مشروبات ساخنة وباردة وحلويات لبدء يومك'
-              : 'Hot & cold beverages and desserts to start your day'}
+              ? 'مقبلات ومشروبات وحلويات للاستمتاع'
+              : 'Appetizers, beverages, and desserts to enjoy'}
           </p>
         </div>
       )}
@@ -385,7 +384,7 @@ export default function MenuPage() {
               onProductClick={handleProductClick}
             />
           ) : (
-            /* ─── MENU / BREAKFAST VIEW ─── */
+            /* ─── MENU / SNACKS VIEW ─── */
             <ProductGrid
               items={displayItems}
               categories={displayCategories}

@@ -59,10 +59,10 @@ export function HeroSection({
   // Menu type cards — each controls what content is shown below
   const menuTypes: { id: MenuMode; name_ar: string; name_en: string; image: string }[] = [
     {
-      id: 'breakfast',
-      name_ar: 'الفطور',
-      name_en: 'Breakfast',
-      image: '/images/menu-types/breakfast.png',
+      id: 'snacks',
+      name_ar: 'تسالي',
+      name_en: 'Snacks',
+      image: '/images/menu-types/snacks.png',
     },
     {
       id: 'menu',
@@ -133,6 +133,7 @@ export function HeroSection({
           src="/images/hero-bg.png"
           alt="Qidr Restaurant"
           className="absolute inset-0 w-full h-full object-cover"
+          loading="eager"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#1A1410]/60 via-black/20 to-[#1A1410]" />
         <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[#1A1410] to-transparent" />

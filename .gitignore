@@ -50,5 +50,18 @@ test
 prompt
 
 server.log
+
+# Uploads
+upload/
+
 # Skills directory
 /skills/
+
+# Worklog
+worklog.md
+
+# DB files
+*.db
+*.db-journal
+/prisma/*.db
+/db/

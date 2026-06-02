@@ -31,6 +31,9 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
+        {/* Preload critical images for faster LCP */}
+        <link rel="preload" href="/images/hero-bg.png" as="image" />
+        <link rel="preload" href="/Qidr.avif" as="image" type="image/avif" />
       </head>
       <body
         className="antialiased text-[#D4956A]"
