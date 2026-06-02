@@ -32,12 +32,10 @@ export function HeroSection({
   const [localSearch, setLocalSearch] = useState(searchQuery)
   const [isFocused, setIsFocused] = useState(false)
 
-  // Sync from store
   useEffect(() => {
     setLocalSearch(searchQuery)
   }, [searchQuery])
 
-  // Debounced search
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearchQuery(localSearch)
@@ -54,12 +52,12 @@ export function HeroSection({
     <header
       dir={isRTL ? 'rtl' : 'ltr'}
       lang={language}
-      className="relative overflow-hidden bg-[#1A1A2E]"
+      className="relative overflow-hidden bg-[#003327]"
     >
       {/* Subtle decorative glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-72 h-72 bg-[#D4A843]/8 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-[#F1CDAB]/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="relative z-10 max-w-2xl mx-auto px-4 py-6 sm:py-8 flex flex-col items-center gap-4">
+      <div className="relative z-10 max-w-[552px] mx-auto px-4 py-6 flex flex-col items-center gap-4">
         {/* Logo + Restaurant name */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -67,22 +65,22 @@ export function HeroSection({
           transition={{ duration: 0.4 }}
           className="flex items-center gap-3"
         >
-          <div className="w-10 h-10 rounded-full bg-[#D4A843]/20 flex items-center justify-center border border-[#D4A843]/40">
-            <UtensilsCrossed className="w-5 h-5 text-[#D4A843]" />
+          <div className="w-11 h-11 rounded-full bg-[#F1CDAB]/15 flex items-center justify-center border border-[#F1CDAB]/25">
+            <UtensilsCrossed className="w-5 h-5 text-[#F1CDAB]" />
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-[#D4A843]">قدر</span>
-            <span className="text-white/30 text-sm">/</span>
-            <span className="text-base font-medium text-white/70">Qidr</span>
+            <span className="text-2xl font-bold text-[#F1CDAB]">قدر</span>
+            <span className="text-white/20 text-sm">/</span>
+            <span className="text-sm font-medium text-[#F3E5D8]/50">Qidr</span>
           </div>
         </motion.div>
 
-        {/* Branch selector — compact inline */}
+        {/* Branch selector */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.05 }}
-          className="w-full max-w-sm"
+          className="w-full max-w-xs"
         >
           <BranchSelector
             branches={branches}
@@ -96,21 +94,21 @@ export function HeroSection({
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
-          className="w-full max-w-md"
+          className="w-full max-w-sm"
         >
           <div
             className={cn(
               'relative flex items-center rounded-xl border bg-white/5 backdrop-blur-sm transition-all duration-300',
               isFocused
-                ? 'border-[#D4A843]/50 shadow-sm shadow-[#D4A843]/10'
-                : 'border-white/15'
+                ? 'border-[#F1CDAB]/40 shadow-sm shadow-[#F1CDAB]/5'
+                : 'border-white/10'
             )}
           >
             <Search
               className={cn(
                 'size-4 shrink-0 transition-colors duration-300',
                 isRTL ? 'ml-3' : 'mr-3',
-                isFocused ? 'text-[#D4A843]' : 'text-white/40'
+                isFocused ? 'text-[#F1CDAB]' : 'text-[#F3E5D8]/35'
               )}
             />
             <input
@@ -120,7 +118,7 @@ export function HeroSection({
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               placeholder={getTranslation(language, 'search_placeholder')}
-              className="flex-1 h-10 bg-transparent text-white placeholder:text-white/35 outline-none text-sm px-0"
+              className="flex-1 h-10 bg-transparent text-[#F1CDAB] placeholder:text-[#F3E5D8]/30 outline-none text-sm px-0"
               dir={isRTL ? 'rtl' : 'ltr'}
             />
             <AnimatePresence>
@@ -135,7 +133,7 @@ export function HeroSection({
                     isRTL ? 'ml-3' : 'mr-3'
                   )}
                 >
-                  <X className="size-3.5 text-white/50" />
+                  <X className="size-3.5 text-[#F3E5D8]/40" />
                 </motion.button>
               )}
             </AnimatePresence>

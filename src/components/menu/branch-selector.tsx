@@ -38,20 +38,20 @@ export function BranchSelector({
 
   return (
     <Select value={selectedBranch ?? '__none__'} onValueChange={handleSelect}>
-      <SelectTrigger className="w-full bg-white/10 backdrop-blur-sm border-white/20 text-white rounded-xl h-12 px-4 [&>span]:text-white [&>svg]:text-[#D4A843] hover:bg-white/15 transition-colors">
+      <SelectTrigger className="w-full bg-white/8 backdrop-blur-sm border-white/15 text-[#F1CDAB] rounded-xl h-11 px-4 [&>span]:text-[#F1CDAB] [&>svg]:text-[#F1CDAB]/60 hover:bg-white/12 transition-colors">
         <div className="flex items-center gap-2">
-          <MapPin className="size-4 text-[#D4A843] shrink-0" />
+          <MapPin className="size-4 text-[#F1CDAB]/60 shrink-0" />
           <SelectValue
             placeholder={getTranslation(language, 'select_branch')}
           />
         </div>
       </SelectTrigger>
-      <SelectContent className="bg-[#1A1A2E] border-white/20 rounded-xl">
+      <SelectContent className="bg-[#003327] border-white/15 rounded-xl">
         {branches.map((branch) => (
           <SelectItem
             key={branch.id}
             value={branch.id}
-            className="text-white/90 hover:bg-[#D4A843]/20 hover:text-[#D4A843] rounded-lg cursor-pointer data-[state=checked]:bg-[#D4A843]/20 data-[state=checked]:text-[#D4A843] transition-colors"
+            className="text-[#F3E5D8]/90 hover:bg-[#F1CDAB]/15 hover:text-[#F1CDAB] rounded-lg cursor-pointer data-[state=checked]:bg-[#F1CDAB]/15 data-[state=checked]:text-[#F1CDAB] transition-colors"
           >
             {language === 'ar' ? branch.name_ar : branch.name_en}
           </SelectItem>

@@ -164,3 +164,34 @@ Stage Summary:
 - Menu now matches reference site pattern: compact cards, image-based category nav, single column layout
 - ESLint: 0 errors, 1 pre-existing warning (unrelated font warning)
 - Dev server compiles and serves successfully
+
+---
+Task ID: r7-r14
+Agent: Main
+Task: Redesign public menu to match reference site (dar-alauja.yallaqrcodes.com) — dark green + gold theme
+
+Work Log:
+- Analyzed reference site via agent-browser: dark green (#003327) bg, sandy gold (#F1CDAB) text, cream (#F3E5D8) secondary text, 80×80px circular category images, horizontal compact product cards (~106px), single column ~552px centered, transparent card backgrounds
+- Rewrote layout.tsx: Updated CSS variables, body background to #003327, text color to #F1CDAB, custom gold-tinted scrollbar, hide-scrollbar utility class
+- Rewrote category-nav.tsx: 68px circular image thumbnails (up from 52px), sticky with z-40, dark green bg (#003327), gold ring active state, category name below, click-to-scroll-to-section
+- Rewrote product-card.tsx: Compact horizontal layout, transparent background (no card bg/border/shadow), 100px rounded image, gold name text (#F1CDAB), cream description, dark green price badge (#003327 bg with #F2F0E5 text), fire emoji for calories
+- Rewrote product-grid.tsx: Single column with subtle dividers between cards, gold section headings with gold/20 divider line, centered max-width from parent
+- Rewrote hero-section.tsx: Dark green (#003327) bg, compact centered layout (max-w-[552px]), gold branding, gold-tinted search bar
+- Rewrote page.tsx: Dark green (#003327) page bg, content wrapped in max-w-[552px] mx-auto container, dark-themed loading skeletons
+- Rewrote menu-footer.tsx: Darker green (#002419) bg, centered social icons, gold-accented rate button, cream contact text
+- Updated branch-selector.tsx: White/8 bg with gold text, dark green dropdown
+- Updated language-switcher.tsx: Dark green bg with gold border/text
+- Updated product-modal.tsx: Dark green (#003327) bg, gold headings, dark-themed variant rows, green/gold badges
+- Updated review-modal.tsx: Dark green bg, gold star ratings, dark-themed inputs/buttons
+- Updated promotion-banner.tsx: Uses hide-scrollbar class for clean auto-scroll
+- Fixed critical bug: API returned `itemVariants` but frontend expected `variants` — added mapping in /api/items route
+- Fixed lint: 0 errors, 1 pre-existing warning (font loading)
+
+Stage Summary:
+- Complete visual redesign matching reference site aesthetic
+- Dark forest green + sandy gold color scheme throughout
+- Sticky category nav with circular images (68px) and click-to-scroll
+- Compact product cards with transparent backgrounds and proper prices
+- All 5 categories display correctly with SAR pricing in both AR/EN
+- Verified via agent-browser: all 9 items show prices, language switching works, category scroll works
+- Admin password: process.env.ADMIN_PASSWORD || 'qidr-admin-secret-key-min-32-characters-long!'

@@ -25,7 +25,14 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: 'desc' },
     });
 
-    return NextResponse.json(items);
+    // Map itemVariants to variants for frontend compatibility
+    const mappedItems = items.map((item) => ({
+      ...item,
+      variants: item.itemVariants,
+      itemVariants: undefined,
+    }));
+
+    return NextResponse.json(mappedItems);
   } catch (error) {
     console.error('Error fetching items:', error);
     return NextResponse.json({ error: 'Failed to fetch items' }, { status: 500 });

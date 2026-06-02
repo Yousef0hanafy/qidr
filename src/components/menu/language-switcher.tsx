@@ -24,9 +24,9 @@ export function LanguageSwitcher() {
         variant="outline"
         size="sm"
         onClick={toggleLanguage}
-        className="rounded-full bg-white/90 backdrop-blur-sm border-[#D4A843]/30 text-[#1A1A2E] hover:bg-[#D4A843]/10 hover:border-[#D4A843] transition-all duration-300 shadow-md gap-1.5"
+        className="rounded-full bg-[#003327]/90 backdrop-blur-sm border-[#F1CDAB]/25 text-[#F1CDAB] hover:bg-[#F1CDAB]/15 hover:border-[#F1CDAB]/40 transition-all duration-300 shadow-lg gap-1.5"
       >
-        <Globe className="size-4 text-[#D4A843]" />
+        <Globe className="size-4 text-[#F1CDAB]/70" />
         <span className="text-sm font-medium">
           {language === 'ar' ? 'EN' : 'عربي'}
         </span>

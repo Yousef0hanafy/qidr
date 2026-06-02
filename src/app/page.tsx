@@ -94,8 +94,6 @@ export default function MenuPage() {
   const [promotions, setPromotions] = useState<Promotion[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Ref to prevent IntersectionObserver from updating the category
-  // while a programmatic scroll is in progress.
   const isScrollingRef = useRef(false)
 
   // ── Fetch branches ───────────────────────────────────────────────
@@ -196,7 +194,7 @@ export default function MenuPage() {
       if (section) {
         const navHeight =
           document.querySelector('nav.sticky')?.getBoundingClientRect()
-            .height ?? 90
+            .height ?? 110
         const top =
           section.getBoundingClientRect().top + window.scrollY - navHeight - 8
         window.scrollTo({ top, behavior: 'smooth' })
@@ -230,7 +228,7 @@ export default function MenuPage() {
     <div
       dir={isRTL ? 'rtl' : 'ltr'}
       lang={language}
-      className="min-h-screen flex flex-col bg-[#f8f5f0]"
+      className="min-h-screen flex flex-col bg-[#003327]"
     >
       {/* Language Switcher — fixed */}
       <LanguageSwitcher />
@@ -244,9 +242,9 @@ export default function MenuPage() {
         }}
       />
 
-      {/* Promotions Banner (only show if there are active promotions) */}
+      {/* Promotions Banner */}
       {promotions.length > 0 && (
-        <div className="py-4">
+        <div className="py-3">
           <PromotionBanner promotions={promotions} />
         </div>
       )}
@@ -260,70 +258,70 @@ export default function MenuPage() {
         />
       )}
 
-      {/* Menu Content */}
+      {/* Menu Content — centered, max-w like reference */}
       <main className="flex-1 pb-8">
-        {!selectedBranch ? (
-          /* No branch selected */
-          <div className="flex flex-col items-center justify-center py-24 px-4 text-center">
-            <div className="w-16 h-16 rounded-full bg-[#D4A843]/10 flex items-center justify-center mb-5">
-              <svg
-                className="w-8 h-8 text-[#D4A843]"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-            </div>
-            <h2 className="text-xl font-bold text-[#1A1A2E] mb-2">
-              {language === 'ar'
-                ? 'اختر فرعًا لتصفح القائمة'
-                : 'Choose a branch to browse the menu'}
-            </h2>
-            <p className="text-[#9CA3AF] text-sm">
-              {language === 'ar'
-                ? 'يرجى اختيار الفرع من القائمة أعلاه'
-                : 'Please select a branch from the selector above'}
-            </p>
-          </div>
-        ) : loading ? (
-          /* Loading skeleton — single column compact cards */
-          <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-3 bg-white rounded-2xl p-3 mb-3 animate-pulse"
-              >
-                <div className="flex-1 space-y-2">
-                  <div className="h-3 bg-gray-200 rounded w-3/4" />
-                  <div className="h-2.5 bg-gray-100 rounded w-1/2" />
-                  <div className="h-3 bg-gray-200 rounded w-1/3" />
-                </div>
-                <div className="w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] bg-gray-200 rounded-2xl shrink-0" />
+        <div className="max-w-[552px] mx-auto">
+          {!selectedBranch ? (
+            <div className="flex flex-col items-center justify-center py-24 px-4 text-center">
+              <div className="w-14 h-14 rounded-full bg-[#F1CDAB]/10 flex items-center justify-center mb-5">
+                <svg
+                  className="w-7 h-7 text-[#F1CDAB]/60"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
               </div>
-            ))}
-          </div>
-        ) : (
-          <ProductGrid
-            items={items}
-            categories={categories}
-            language={language}
-            searchQuery={searchQuery}
-            onProductClick={handleProductClick}
-            onCategoryInView={handleCategoryInView}
-          />
-        )}
+              <h2 className="text-lg font-bold text-[#F1CDAB] mb-2">
+                {language === 'ar'
+                  ? 'اختر فرعًا لتصفح القائمة'
+                  : 'Choose a branch to browse the menu'}
+              </h2>
+              <p className="text-[#F3E5D8]/40 text-sm">
+                {language === 'ar'
+                  ? 'يرجى اختيار الفرع من القائمة أعلاه'
+                  : 'Please select a branch from the selector above'}
+              </p>
+            </div>
+          ) : loading ? (
+            <div className="px-2 py-6">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-3 py-3 animate-pulse"
+                >
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3 bg-white/8 rounded w-3/4" />
+                    <div className="h-2 bg-white/5 rounded w-1/2" />
+                    <div className="h-3 bg-white/8 rounded w-1/4" />
+                  </div>
+                  <div className="w-[100px] h-[100px] bg-white/8 rounded-lg shrink-0" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <ProductGrid
+              items={items}
+              categories={categories}
+              language={language}
+              searchQuery={searchQuery}
+              onProductClick={handleProductClick}
+              onCategoryInView={handleCategoryInView}
+            />
+          )}
+        </div>
       </main>
 
       {/* Product Detail Modal */}

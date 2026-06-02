@@ -40,7 +40,6 @@ export function PromotionBanner({ promotions }: PromotionBannerProps) {
 
   if (promotions.length === 0) return null
 
-  // Duplicate for infinite scroll effect
   const duplicated = [...promotions, ...promotions]
 
   return (
@@ -54,15 +53,13 @@ export function PromotionBanner({ promotions }: PromotionBannerProps) {
     >
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto scrollbar-hide px-4 py-2"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        className="flex gap-4 overflow-x-auto hide-scrollbar px-4 py-2"
       >
         {duplicated.map((promo, idx) => (
           <div
             key={`${promo.id}-${idx}`}
             className="shrink-0 w-72 sm:w-80 h-40 sm:h-44 rounded-2xl overflow-hidden relative group cursor-pointer"
           >
-            {/* Background image or gradient fallback */}
             {promo.imageUrl ? (
               <img
                 src={promo.imageUrl}
@@ -70,13 +67,11 @@ export function PromotionBanner({ promotions }: PromotionBannerProps) {
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
             ) : (
-              <div className="absolute inset-0 bg-gradient-to-br from-[#D4A843] to-[#B8912E]" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#F1CDAB]/30 to-[#F1CDAB]/10" />
             )}
 
-            {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-            {/* Text content */}
             <div className="absolute inset-0 flex items-end p-5">
               <div>
                 <h3 className="text-white font-bold text-lg leading-tight">

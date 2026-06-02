@@ -33,7 +33,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="antialiased bg-white text-gray-900"
+        className="antialiased text-[#F1CDAB]"
         style={{
           fontFamily: 'var(--font-primary)',
         }}
@@ -41,10 +41,11 @@ export default function RootLayout({
         <style>{`
           :root {
             --font-primary: 'Noto Kufi Arabic', 'Inter', system-ui, -apple-system, sans-serif;
-            --color-gold: #D4A843;
-            --color-gold-light: #F0D88A;
-            --color-navy: #1A1A2E;
-            --color-navy-light: #16213E;
+            --color-green-dark: #003327;
+            --color-green-darker: #002419;
+            --color-gold: #F1CDAB;
+            --color-cream: #F3E5D8;
+            --color-white-on-dark: #F2F0E5;
           }
           html {
             scroll-behavior: smooth;
@@ -52,21 +53,22 @@ export default function RootLayout({
           body {
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            background: #003327;
           }
           /* Custom scrollbar */
           ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
           }
           ::-webkit-scrollbar-track {
             background: transparent;
           }
           ::-webkit-scrollbar-thumb {
-            background: #D4D4D8;
+            background: rgba(241,205,171,0.3);
             border-radius: 3px;
           }
           ::-webkit-scrollbar-thumb:hover {
-            background: #A1A1AA;
+            background: rgba(241,205,171,0.5);
           }
           /* RTL support */
           [dir="rtl"] {
@@ -74,6 +76,14 @@ export default function RootLayout({
           }
           [dir="ltr"] {
             text-align: left;
+          }
+          /* Hide horizontal scrollbar in category nav */
+          .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+          }
+          .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
           }
         `}</style>
         {children}
