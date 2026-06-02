@@ -146,3 +146,21 @@ Stage Summary:
 - All core features verified working in browser
 - ESLint: 0 errors, 2 warnings (non-critical)
 - Platform is production-ready
+
+---
+Task ID: r1-r6
+Agent: Menu Redesigner
+Task: Redesign menu components to match reference site
+
+Work Log:
+- Rewrote category-nav.tsx: sticky dark navy bar with 52px circular image thumbnails, gold active ring/border, auto-scroll to active thumbnail, smooth page scroll on click
+- Rewrote product-card.tsx: compact horizontal layout (text left + image right for LTR; reversed for RTL), 80-100px height, small rounded-square image, calories pill, gold price, framer-motion enter/hover animations
+- Rewrote product-grid.tsx: single column layout, gold section headings with gradient dividers, IntersectionObserver with rootMargin `-10% 0px -55% 0px` to auto-detect visible category, ref-based callback to avoid observer recreation
+- Rewrote hero-section.tsx: compact dark header (~200px) with logo icon + restaurant name, inline branch selector, integrated search bar with debounce, no hero image/chevron
+- Updated page.tsx: warm cream background (#f8f5f0), proper wiring of all components, isScrollingRef to prevent observer flicker during programmatic scroll, single-column loading skeletons, semantic `<main>` element
+- Fixed ESLint: removed unused eslint-disable directive, moved ref assignment into useEffect
+
+Stage Summary:
+- Menu now matches reference site pattern: compact cards, image-based category nav, single column layout
+- ESLint: 0 errors, 1 pre-existing warning (unrelated font warning)
+- Dev server compiles and serves successfully

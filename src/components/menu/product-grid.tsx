@@ -1,9 +1,8 @@
 'use client'
 
-import { useMemo } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useMemo, useEffect, useRef, useCallback } from 'react'
+import { motion } from 'framer-motion'
 import { SearchX } from 'lucide-react'
-import { useMenuStore } from '@/store/menu-store'
 import { getTranslation } from '@/lib/i18n'
 import { ProductCard } from './product-card'
 
@@ -51,8 +50,8 @@ interface ProductGridProps {
   categories: Category[]
   language: 'ar' | 'en'
   searchQuery: string
-  selectedCategory: string | null
   onProductClick: (item: Item) => void
+  onCategoryInView: (categoryId: string) => void
 }
 
 export function ProductGrid({
@@ -60,21 +59,23 @@ export function ProductGrid({
   categories,
   language,
   searchQuery,
-  selectedCategory,
   onProductClick,
+  onCategoryInView,
 }: ProductGridProps) {
   const isRTL = language === 'ar'
+  const sectionRefs = useRef<Map<string, HTMLElement>>(new Map())
 
-  // Filter items
+  // Keep the callback in a ref so the IntersectionObserver doesn't need
+  // to be re-created when the callback identity changes.
+  const onCategoryInViewRef = useRef(onCategoryInView)
+  useEffect(() => {
+    onCategoryInViewRef.current = onCategoryInView
+  }, [onCategoryInView])
+
+  // Filter items by search query only (category is not a filter any more)
   const filteredItems = useMemo(() => {
     let filtered = items.filter((item) => item.isActive)
 
-    // Filter by category
-    if (selectedCategory) {
-      filtered = filtered.filter((item) => item.categoryId === selectedCategory)
-    }
-
-    // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim()
       filtered = filtered.filter((item) => {
@@ -89,7 +90,7 @@ export function ProductGrid({
     }
 
     return filtered
-  }, [items, selectedCategory, searchQuery])
+  }, [items, searchQuery])
 
   // Group by category
   const groupedItems = useMemo(() => {
@@ -103,13 +104,48 @@ export function ProductGrid({
     return groups
   }, [filteredItems])
 
-  // Get sorted categories that have items
+  // Sorted categories that actually have items
   const activeCategories = useMemo(() => {
     return categories
       .filter((cat) => groupedItems[cat.id]?.length)
       .sort((a, b) => a.sortOrder - b.sortOrder)
   }, [categories, groupedItems])
 
+  // IntersectionObserver — detect which category section is currently
+  // visible in the viewport centre zone. Only active when the user is
+  // not in search mode.
+  useEffect(() => {
+    if (searchQuery.trim() || activeCategories.length === 0) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Pick the entry that is currently most in view
+        const intersecting = entries.filter((e) => e.isIntersecting)
+        if (intersecting.length > 0) {
+          const best = intersecting.reduce((prev, cur) =>
+            cur.intersectionRatio > prev.intersectionRatio ? cur : prev
+          )
+          const id = best.target.id.replace('category-', '')
+          onCategoryInViewRef.current(id)
+        }
+      },
+      { rootMargin: '-10% 0px -55% 0px', threshold: 0 }
+    )
+
+    sectionRefs.current.forEach((el) => observer.observe(el))
+    return () => observer.disconnect()
+  }, [activeCategories, searchQuery])
+
+  // Ref callback helper — attaches DOM elements to the ref map
+  const setSectionRef = useCallback(
+    (id: string) => (el: HTMLElement | null) => {
+      if (el) sectionRefs.current.set(id, el)
+      else sectionRefs.current.delete(id)
+    },
+    []
+  )
+
+  // ── Empty state ──────────────────────────────────────────────────
   if (filteredItems.length === 0) {
     return (
       <motion.div
@@ -119,8 +155,8 @@ export function ProductGrid({
         dir={isRTL ? 'rtl' : 'ltr'}
         lang={language}
       >
-        <SearchX className="w-16 h-16 text-gray-300 mb-4" />
-        <p className="text-gray-400 text-lg font-medium">
+        <SearchX className="w-16 h-16 text-[#9CA3AF]/40 mb-4" />
+        <p className="text-[#9CA3AF] text-lg font-medium">
           {getTranslation(language, 'no_results')}
         </p>
       </motion.div>
@@ -130,42 +166,46 @@ export function ProductGrid({
   return (
     <div dir={isRTL ? 'rtl' : 'ltr'} lang={language} className="w-full">
       {activeCategories.map((category, catIdx) => (
-        <div key={category.id} id={`category-${category.id}`} className="mb-10">
-          {/* Category heading */}
+        <section
+          key={category.id}
+          id={`category-${category.id}`}
+          ref={setSectionRef(category.id)}
+          className="mb-8"
+        >
+          {/* Section heading with gold colour and subtle divider */}
           <motion.div
             initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4, delay: catIdx * 0.05 }}
-            className="flex items-center gap-3 mb-6 px-4"
+            transition={{ duration: 0.35, delay: catIdx * 0.04 }}
+            className="flex items-center gap-3 mb-4 px-4 sm:px-6"
           >
-            <h2 className="text-xl sm:text-2xl font-bold text-[#1A1A2E]">
+            <h2 className="text-lg sm:text-xl font-bold text-[#D4A843] whitespace-nowrap">
               {language === 'ar' ? category.name_ar : category.name_en}
             </h2>
-            <div className="flex-1 h-px bg-gradient-to-r from-[#D4A843]/40 to-transparent" />
+            <div className="flex-1 h-px bg-gradient-to-r from-[#D4A843]/30 to-transparent" />
           </motion.div>
 
-          {/* Items grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-4">
-            <AnimatePresence mode="popLayout">
-              {groupedItems[category.id].map((item, itemIdx) => (
-                <motion.div
-                  key={item.id}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.3, delay: itemIdx * 0.05 }}
-                >
-                  <ProductCard
-                    item={item}
-                    language={language}
-                    onClick={() => onProductClick(item)}
-                  />
-                </motion.div>
-              ))}
-            </AnimatePresence>
+          {/* Single-column card list */}
+          <div className="flex flex-col gap-3 px-4 sm:px-6">
+            {groupedItems[category.id].map((item, itemIdx) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.25,
+                  delay: catIdx * 0.03 + itemIdx * 0.04,
+                }}
+              >
+                <ProductCard
+                  item={item}
+                  language={language}
+                  onClick={() => onProductClick(item)}
+                />
+              </motion.div>
+            ))}
           </div>
-        </div>
+        </section>
       ))}
     </div>
   )

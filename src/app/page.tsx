@@ -2,9 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useMenuStore } from '@/store/menu-store'
-import { Language } from '@/lib/i18n'
 import { HeroSection } from '@/components/menu/hero-section'
-import { SearchBar } from '@/components/menu/search-bar'
 import { PromotionBanner } from '@/components/menu/promotion-banner'
 import { CategoryNav } from '@/components/menu/category-nav'
 import { ProductGrid } from '@/components/menu/product-grid'
@@ -83,7 +81,6 @@ export default function MenuPage() {
     searchQuery,
     isProductModalOpen,
     selectedProduct,
-    openProductModal,
     closeProductModal,
     isReviewModalOpen,
     setIsReviewModalOpen,
@@ -96,9 +93,12 @@ export default function MenuPage() {
   const [items, setItems] = useState<Item[]>([])
   const [promotions, setPromotions] = useState<Promotion[]>([])
   const [loading, setLoading] = useState(true)
-  const menuSectionRef = useRef<HTMLDivElement>(null)
 
-  // Fetch branches
+  // Ref to prevent IntersectionObserver from updating the category
+  // while a programmatic scroll is in progress.
+  const isScrollingRef = useRef(false)
+
+  // ── Fetch branches ───────────────────────────────────────────────
   useEffect(() => {
     async function fetchBranches() {
       try {
@@ -106,7 +106,6 @@ export default function MenuPage() {
         if (res.ok) {
           const data = await res.json()
           setBranches(data)
-          // Auto-select first active branch if none selected
           if (!selectedBranch && data.length > 0) {
             const firstActive = data.find((b: Branch) => b.isActive)
             if (firstActive) {
@@ -121,7 +120,7 @@ export default function MenuPage() {
     fetchBranches()
   }, [])
 
-  // Fetch categories
+  // ── Fetch categories ────────────────────────────────────────────
   useEffect(() => {
     async function fetchCategories() {
       try {
@@ -136,7 +135,7 @@ export default function MenuPage() {
     fetchCategories()
   }, [])
 
-  // Fetch items with variants for selected branch
+  // ── Fetch items ─────────────────────────────────────────────────
   useEffect(() => {
     async function fetchItems() {
       if (!selectedBranch) return
@@ -155,7 +154,7 @@ export default function MenuPage() {
     fetchItems()
   }, [selectedBranch])
 
-  // Fetch promotions for selected branch
+  // ── Fetch promotions ────────────────────────────────────────────
   useEffect(() => {
     async function fetchPromotions() {
       try {
@@ -173,41 +172,70 @@ export default function MenuPage() {
     fetchPromotions()
   }, [selectedBranch])
 
-  // Check URL for branch slug
+  // ── URL hash for branch slug ───────────────────────────────────
   useEffect(() => {
     const hash = window.location.hash
     if (hash.startsWith('#branch=')) {
       const slug = hash.replace('#branch=', '')
-      const branch = branches.find(b => b.slug === slug)
+      const branch = branches.find((b) => b.slug === slug)
       if (branch) {
         useMenuStore.getState().setSelectedBranch(branch.id)
       }
     }
   }, [branches])
 
-  const currentBranch = branches.find(b => b.id === selectedBranch)
+  const currentBranch = branches.find((b) => b.id === selectedBranch)
 
-  const handleProductClick = useCallback((item: Item) => {
-    openProductModal(item)
-  }, [openProductModal])
+  // ── Category nav click → scroll to section ──────────────────────
+  const handleCategorySelect = useCallback(
+    (categoryId: string) => {
+      isScrollingRef.current = true
+      setSelectedCategory(categoryId)
 
-  const handleCategorySelect = useCallback((categoryId: string | null) => {
-    setSelectedCategory(categoryId)
-    // Scroll to menu section
-    if (categoryId && menuSectionRef.current) {
       const section = document.getElementById(`category-${categoryId}`)
       if (section) {
-        section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        const navHeight =
+          document.querySelector('nav.sticky')?.getBoundingClientRect()
+            .height ?? 90
+        const top =
+          section.getBoundingClientRect().top + window.scrollY - navHeight - 8
+        window.scrollTo({ top, behavior: 'smooth' })
       }
-    }
-  }, [setSelectedCategory])
+
+      setTimeout(() => {
+        isScrollingRef.current = false
+      }, 600)
+    },
+    [setSelectedCategory]
+  )
+
+  // ── IntersectionObserver callback from ProductGrid ──────────────
+  const handleCategoryInView = useCallback(
+    (categoryId: string) => {
+      if (!isScrollingRef.current && !searchQuery.trim()) {
+        setSelectedCategory(categoryId)
+      }
+    },
+    [setSelectedCategory, searchQuery]
+  )
+
+  const handleProductClick = useCallback(
+    (item: Item) => {
+      useMenuStore.getState().openProductModal(item)
+    },
+    []
+  )
 
   return (
-    <div dir={isRTL ? 'rtl' : 'ltr'} lang={language} className="min-h-screen flex flex-col bg-white">
-      {/* Language Switcher - Fixed */}
+    <div
+      dir={isRTL ? 'rtl' : 'ltr'}
+      lang={language}
+      className="min-h-screen flex flex-col bg-[#f8f5f0]"
+    >
+      {/* Language Switcher — fixed */}
       <LanguageSwitcher />
 
-      {/* Hero Section */}
+      {/* Compact Hero Header */}
       <HeroSection
         branches={branches}
         selectedBranch={selectedBranch}
@@ -216,19 +244,14 @@ export default function MenuPage() {
         }}
       />
 
-      {/* Search Bar */}
-      <div className="max-w-2xl mx-auto px-4 -mt-6 relative z-10">
-        <SearchBar />
-      </div>
-
-      {/* Promotions Banner */}
+      {/* Promotions Banner (only show if there are active promotions) */}
       {promotions.length > 0 && (
-        <div className="py-6">
+        <div className="py-4">
           <PromotionBanner promotions={promotions} />
         </div>
       )}
 
-      {/* Category Navigation - Sticky */}
+      {/* Category Navigation — sticky with circular thumbnails */}
       {categories.length > 0 && selectedBranch && (
         <CategoryNav
           categories={categories}
@@ -238,33 +261,58 @@ export default function MenuPage() {
       )}
 
       {/* Menu Content */}
-      <div ref={menuSectionRef} className="flex-1 pb-8">
+      <main className="flex-1 pb-8">
         {!selectedBranch ? (
+          /* No branch selected */
           <div className="flex flex-col items-center justify-center py-24 px-4 text-center">
-            <div className="w-20 h-20 rounded-full bg-amber-50 flex items-center justify-center mb-6">
-              <svg className="w-10 h-10 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            <div className="w-16 h-16 rounded-full bg-[#D4A843]/10 flex items-center justify-center mb-5">
+              <svg
+                className="w-8 h-8 text-[#D4A843]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
-              {language === 'ar' ? 'اختر فرعًا لتصفح القائمة' : 'Choose a branch to browse the menu'}
+            <h2 className="text-xl font-bold text-[#1A1A2E] mb-2">
+              {language === 'ar'
+                ? 'اختر فرعًا لتصفح القائمة'
+                : 'Choose a branch to browse the menu'}
             </h2>
-            <p className="text-gray-500">
-              {language === 'ar' ? 'يرجى اختيار الفرع من القائمة أعلاه' : 'Please select a branch from the selector above'}
+            <p className="text-[#9CA3AF] text-sm">
+              {language === 'ar'
+                ? 'يرجى اختيار الفرع من القائمة أعلاه'
+                : 'Please select a branch from the selector above'}
             </p>
           </div>
         ) : loading ? (
-          <div className="max-w-6xl mx-auto px-4 py-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="animate-pulse">
-                  <div className="bg-gray-200 rounded-2xl h-48 mb-4" />
-                  <div className="bg-gray-200 rounded h-4 w-3/4 mb-2" />
-                  <div className="bg-gray-200 rounded h-4 w-1/2" />
+          /* Loading skeleton — single column compact cards */
+          <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-3 bg-white rounded-2xl p-3 mb-3 animate-pulse"
+              >
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 bg-gray-200 rounded w-3/4" />
+                  <div className="h-2.5 bg-gray-100 rounded w-1/2" />
+                  <div className="h-3 bg-gray-200 rounded w-1/3" />
                 </div>
-              ))}
-            </div>
+                <div className="w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] bg-gray-200 rounded-2xl shrink-0" />
+              </div>
+            ))}
           </div>
         ) : (
           <ProductGrid
@@ -272,11 +320,11 @@ export default function MenuPage() {
             categories={categories}
             language={language}
             searchQuery={searchQuery}
-            selectedCategory={selectedCategory}
             onProductClick={handleProductClick}
+            onCategoryInView={handleCategoryInView}
           />
         )}
-      </div>
+      </main>
 
       {/* Product Detail Modal */}
       {isProductModalOpen && selectedProduct && (

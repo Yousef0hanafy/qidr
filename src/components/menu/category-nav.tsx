@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { useMenuStore } from '@/store/menu-store'
 import { cn } from '@/lib/utils'
@@ -16,7 +16,7 @@ interface Category {
 interface CategoryNavProps {
   categories: Category[]
   selectedCategory: string | null
-  onSelect: (categoryId: string | null) => void
+  onSelect: (categoryId: string) => void
 }
 
 export function CategoryNav({
@@ -25,73 +25,108 @@ export function CategoryNav({
   onSelect,
 }: CategoryNavProps) {
   const { language } = useMenuStore()
-  const isRTL = language === 'ar'
   const scrollRef = useRef<HTMLDivElement>(null)
-  const activeRef = useRef<HTMLButtonElement>(null)
+  const itemRefs = useRef<Map<string, HTMLButtonElement>>(new Map())
 
-  // Auto-scroll to active category
+  // Auto-scroll the nav bar to center the active thumbnail
   useEffect(() => {
-    if (activeRef.current && scrollRef.current) {
-      const scrollEl = scrollRef.current
-      const activeEl = activeRef.current
-      const scrollLeft =
-        activeEl.offsetLeft -
-        scrollEl.offsetWidth / 2 +
-        activeEl.offsetWidth / 2
-      scrollEl.scrollTo({ left: scrollLeft, behavior: 'smooth' })
+    if (selectedCategory && scrollRef.current) {
+      const activeEl = itemRefs.current.get(selectedCategory)
+      if (activeEl) {
+        const scrollEl = scrollRef.current
+        const scrollLeft =
+          activeEl.offsetLeft -
+          scrollEl.offsetWidth / 2 +
+          activeEl.offsetWidth / 2
+        scrollEl.scrollTo({ left: scrollLeft, behavior: 'smooth' })
+      }
     }
   }, [selectedCategory])
+
+  const handleClick = useCallback(
+    (categoryId: string) => {
+      onSelect(categoryId)
+      // Scroll the page to the matching category section
+      const section = document.getElementById(`category-${categoryId}`)
+      if (section) {
+        const navHeight = scrollRef.current?.offsetHeight || 90
+        const top =
+          section.getBoundingClientRect().top + window.scrollY - navHeight - 8
+        window.scrollTo({ top, behavior: 'smooth' })
+      }
+    },
+    [onSelect]
+  )
 
   if (categories.length === 0) return null
 
   return (
-    <div
-      dir={isRTL ? 'rtl' : 'ltr'}
+    <nav
+      dir={language === 'ar' ? 'rtl' : 'ltr'}
       lang={language}
-      className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm"
+      className="sticky top-0 z-40 bg-[#1A1A2E] border-b border-[#D4A843]/15 shadow-lg"
     >
       <div
         ref={scrollRef}
-        className="flex gap-1 overflow-x-auto px-4 py-3"
+        className="flex gap-5 overflow-x-auto px-5 py-3"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {/* All button */}
-        <button
-          ref={selectedCategory === null ? activeRef : undefined}
-          onClick={() => onSelect(null)}
-          className={cn(
-            'shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 whitespace-nowrap',
-            selectedCategory === null
-              ? 'bg-[#D4A843] text-white shadow-md shadow-[#D4A843]/20'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-          )}
-        >
-          {language === 'ar' ? 'الكل' : 'All'}
-        </button>
+        {categories.map((cat) => {
+          const isActive = selectedCategory === cat.id
+          const catName = language === 'ar' ? cat.name_ar : cat.name_en
 
-        {categories.map((cat) => (
-          <button
-            key={cat.id}
-            ref={selectedCategory === cat.id ? activeRef : undefined}
-            onClick={() => onSelect(cat.id)}
-            className={cn(
-              'shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 whitespace-nowrap',
-              selectedCategory === cat.id
-                ? 'bg-[#D4A843] text-white shadow-md shadow-[#D4A843]/20'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            )}
-          >
-            {cat.imageUrl && (
-              <img
-                src={cat.imageUrl}
-                alt=""
-                className="w-5 h-5 rounded-full object-cover"
-              />
-            )}
-            {language === 'ar' ? cat.name_ar : cat.name_en}
-          </button>
-        ))}
+          return (
+            <button
+              key={cat.id}
+              ref={(el) => {
+                if (el) itemRefs.current.set(cat.id, el)
+              }}
+              onClick={() => handleClick(cat.id)}
+              className="shrink-0 flex flex-col items-center gap-1.5 group focus:outline-none"
+              aria-label={catName}
+            >
+              {/* Circular thumbnail */}
+              <motion.div
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.94 }}
+                className={cn(
+                  'w-[52px] h-[52px] rounded-full border-[3px] overflow-hidden transition-all duration-300',
+                  isActive
+                    ? 'border-[#D4A843] scale-110 shadow-lg shadow-[#D4A843]/30'
+                    : 'border-white/15 group-hover:border-[#D4A843]/40'
+                )}
+              >
+                {cat.imageUrl ? (
+                  <img
+                    src={cat.imageUrl}
+                    alt={catName}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-[#D4A843]/20 flex items-center justify-center">
+                    <span className="text-[#F1CDAF] text-sm font-bold">
+                      {catName.charAt(0)}
+                    </span>
+                  </div>
+                )}
+              </motion.div>
+
+              {/* Small label */}
+              <span
+                className={cn(
+                  'text-[11px] leading-tight text-center transition-colors duration-300 max-w-[64px] line-clamp-2',
+                  isActive
+                    ? 'text-[#D4A843] font-semibold'
+                    : 'text-[#F1CDAF]/60 group-hover:text-[#F1CDAF]'
+                )}
+              >
+                {catName}
+              </span>
+            </button>
+          )
+        })}
       </div>
-    </div>
+    </nav>
   )
 }
