@@ -14,7 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Toaster } from '@/components/ui/sonner';
 
 function AdminLoginForm() {
   const [password, setPassword] = useState('');
@@ -97,8 +96,7 @@ function AdminLoginForm() {
 export default function AdminLoginPage() {
   return (
     <div className="w-full max-w-md px-4">
-      <Toaster position="top-center" richColors />
-
+      
       {/* Branding */}
       <div className="mb-8 flex flex-col items-center gap-2">
         <div className="flex items-center gap-3">
