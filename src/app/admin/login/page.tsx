@@ -45,7 +45,6 @@ function AdminLoginForm() {
       if (res.ok && data.success) {
         toast.success('Login successful!');
         router.push(callbackUrl);
-        router.refresh();
       } else {
         toast.error(data.error || data.message || 'Invalid password');
       }
