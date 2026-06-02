@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
-import { Search, X, ChevronDown, MapPin, Globe } from 'lucide-react'
+import { Search, X, ChevronDown, MapPin, Globe, Coffee, UtensilsCrossed, Leaf } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useMenuStore } from '@/store/menu-store'
 import { getTranslation } from '@/lib/i18n'
@@ -56,14 +56,40 @@ export function HeroSection({
       : currentBranch.name_en
     : getTranslation(language, 'select_branch')
 
+  // Menu type cards - 3 circular navigation types like the reference
+  const menuTypes = [
+    {
+      id: 'breakfast',
+      name_ar: 'الفطور',
+      name_en: 'Breakfast',
+      image: '/images/menu-types/breakfast.png',
+      icon: Coffee,
+    },
+    {
+      id: 'menu',
+      name_ar: 'منيو المطعم',
+      name_en: 'Restaurant Menu',
+      image: '/images/menu-types/restaurant-menu.png',
+      icon: UtensilsCrossed,
+    },
+    {
+      id: 'nutrition',
+      name_ar: 'الارشادات الغذائية',
+      name_en: 'Nutritional Guide',
+      image: '/images/menu-types/nutritional-guide.png',
+      icon: Leaf,
+    },
+  ]
+
   return (
     <header
       dir={isRTL ? 'rtl' : 'ltr'}
       lang={language}
-      className="relative overflow-hidden"
+      className="relative z-30"
     >
-      {/* Hero background image */}
-      <div className="relative w-full h-[280px] sm:h-[320px]">
+      {/* ─── HERO IMAGE SECTION ─── */}
+      {/* z-30: Highest layer — background image sits behind everything */}
+      <div className="relative w-full h-[260px] sm:h-[300px]">
         <img
           src="/images/hero-bg.png"
           alt="Qidr Restaurant"
@@ -71,13 +97,14 @@ export function HeroSection({
         />
         {/* Dark gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-[#1A1410]" />
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#1A1410] to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#1A1410] to-transparent" />
       </div>
 
-      {/* Content overlay */}
-      <div className="absolute inset-0 z-10 flex flex-col items-center">
-        {/* Top row: Language switcher (small, in corner) */}
-        <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20">
+      {/* ─── HERO CONTENT OVERLAY ─── */}
+      {/* z-30: Logo + name on top of the hero image */}
+      <div className="absolute inset-0 z-30 flex flex-col items-center pointer-events-none">
+        {/* Language switcher — pointer-events-auto so it's clickable */}
+        <div className="absolute top-3 left-3 sm:top-4 sm:left-4 pointer-events-auto z-[35]">
           <button
             onClick={() => useMenuStore.getState().setLanguage(language === 'ar' ? 'en' : 'ar')}
             className="flex items-center gap-1.5 bg-black/30 backdrop-blur-sm rounded-full px-3 py-1.5 text-white/80 hover:text-white text-xs transition-colors"
@@ -87,15 +114,13 @@ export function HeroSection({
           </button>
         </div>
 
-        {/* Logo + Restaurant name - centered at bottom of hero */}
-        <div className="mt-auto mb-6 flex flex-col items-center gap-2">
+        {/* Logo + Restaurant name */}
+        <div className="mt-auto mb-4 sm:mb-6 flex flex-col items-center gap-2">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="relative"
           >
-            {/* Circular logo container */}
             <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-[3px] border-[#D4956A]/50 shadow-lg shadow-black/30">
               <Image
                 src="/Qidr.avif"
@@ -123,8 +148,9 @@ export function HeroSection({
         </div>
       </div>
 
-      {/* Below hero: Branch selector + Search in a compact bar */}
-      <div className="relative z-10 max-w-[552px] mx-auto px-4">
+      {/* ─── BRANCH SELECTOR + SEARCH ─── */}
+      {/* z-20: Below hero content, above category nav. Branch dropdown gets z-50 */}
+      <div className="relative z-20 max-w-[552px] mx-auto px-4 -mt-2">
         {/* Branch selector - compact */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
@@ -135,26 +161,26 @@ export function HeroSection({
           <div className="relative">
             <button
               onClick={() => setShowBranchPicker(!showBranchPicker)}
-              className="w-full flex items-center justify-between gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl h-10 px-4 text-[#D4956A] text-sm hover:bg-white/8 transition-colors"
+              className="w-full flex items-center justify-between gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl h-9 px-3 text-[#D4956A] text-xs sm:text-sm hover:bg-white/8 transition-colors"
             >
               <div className="flex items-center gap-2">
-                <MapPin className="size-3.5 text-[#D4956A]/50" />
-                <span className="text-[#D4956A]/70">{branchLabel}</span>
+                <MapPin className="size-3 text-[#D4956A]/50" />
+                <span className="text-[#D4956A]/70 truncate">{branchLabel}</span>
               </div>
               <ChevronDown className={cn(
-                "size-4 text-[#D4956A]/40 transition-transform",
+                "size-3.5 text-[#D4956A]/40 transition-transform shrink-0",
                 showBranchPicker && "rotate-180"
               )} />
             </button>
 
-            {/* Branch dropdown */}
+            {/* Branch dropdown — z-50 so it goes over everything */}
             <AnimatePresence>
               {showBranchPicker && (
                 <motion.div
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
-                  className="absolute top-full left-0 right-0 mt-1 bg-[#120D08] border border-white/10 rounded-xl overflow-hidden shadow-xl z-50"
+                  className="absolute top-full left-0 right-0 mt-1 bg-[#120D08] border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50"
                 >
                   {branches.map((branch) => (
                     <button
@@ -184,7 +210,7 @@ export function HeroSection({
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
-          className="mb-3"
+          className="mb-4"
         >
           <div
             className={cn(
@@ -208,7 +234,7 @@ export function HeroSection({
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               placeholder={getTranslation(language, 'search_placeholder')}
-              className="flex-1 h-10 bg-transparent text-[#D4956A] placeholder:text-[#D4C8BB]/30 outline-none text-sm px-0"
+              className="flex-1 h-9 bg-transparent text-[#D4956A] placeholder:text-[#D4C8BB]/30 outline-none text-sm px-0"
               dir={isRTL ? 'rtl' : 'ltr'}
             />
             <AnimatePresence>
@@ -228,6 +254,41 @@ export function HeroSection({
               )}
             </AnimatePresence>
           </div>
+        </motion.div>
+
+        {/* ─── 3 MENU TYPE CARDS ─── */}
+        {/* الفطور / منيو المطعم / الارشادات الغذائية */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.25 }}
+          className="flex justify-center gap-6 sm:gap-10 mb-4"
+        >
+          {menuTypes.map((type, idx) => {
+            const Icon = type.icon
+            return (
+              <button
+                key={type.id}
+                className="flex flex-col items-center gap-2 group focus:outline-none"
+              >
+                <motion.div
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-[72px] h-[72px] sm:w-[80px] sm:h-[80px] rounded-full overflow-hidden ring-2 ring-[#D4956A]/25 group-hover:ring-[#D4956A]/60 transition-all duration-300 shadow-lg shadow-black/20"
+                >
+                  <img
+                    src={type.image}
+                    alt={isRTL ? type.name_ar : type.name_en}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </motion.div>
+                <span className="text-[11px] sm:text-xs text-[#D4956A]/80 group-hover:text-[#D4956A] font-medium transition-colors text-center max-w-[80px] sm:max-w-[90px] leading-tight">
+                  {isRTL ? type.name_ar : type.name_en}
+                </span>
+              </button>
+            )
+          })}
         </motion.div>
       </div>
     </header>
