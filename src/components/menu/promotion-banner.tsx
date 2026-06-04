@@ -122,11 +122,11 @@ export function PromotionBanner({ promotions }: PromotionBannerProps) {
             >
               {/* Image */}
               {selectedPromo.imageUrl ? (
-                <div className="aspect-[16/9] w-full overflow-hidden">
+                <div className="aspect-[16/9] w-full overflow-hidden bg-black/40 flex items-center justify-center">
                   <img
                     src={selectedPromo.imageUrl}
                     alt={isRtl ? selectedPromo.title_ar : selectedPromo.title_en}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain" 
                   />
                 </div>
               ) : (
